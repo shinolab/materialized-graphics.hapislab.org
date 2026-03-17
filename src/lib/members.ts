@@ -67,11 +67,94 @@ export interface AlumniEntry {
 	sortOrder: number;
 }
 
+export interface MemberDetailProfile {
+	slug: string;
+	kind: 'staff' | 'student';
+	name: string;
+	nameEn: string;
+	role: string;
+	roleEn: string;
+	email?: string;
+	href?: string;
+}
+
 const STUDENT_ROLE_LABELS: Record<DegreeKey, { ja: string, en: string, order: number }> = {
 	D: { ja: '博士', en: 'Ph.D.', order: 1 },
 	M: { ja: '修士', en: 'Master', order: 2 },
 	B: { ja: '学部', en: 'Bachelor', order: 3 },
 };
+
+function getMemberDetailSlugFromHref(href?: string): string | undefined {
+	if (!href) return undefined;
+
+	try {
+		const url = new URL(href, 'https://hapislab.org');
+		const match = url.pathname.match(/^\/(?:en\/)?members\/([^/]+)\/?$/);
+		if (!match || url.search || url.hash) {
+			return undefined;
+		}
+		return match[1];
+	} catch {
+		return undefined;
+	}
+}
+
+function getStudentRole(student: Student): { ja: string; en: string } {
+	for (const degreeKey of ['D', 'M', 'B'] as DegreeKey[]) {
+		if (student.degrees[degreeKey]) {
+			return {
+				ja: STUDENT_ROLE_LABELS[degreeKey].ja,
+				en: STUDENT_ROLE_LABELS[degreeKey].en,
+			};
+		}
+	}
+
+	return { ja: '学生', en: 'Student' };
+}
+
+export function getMemberDetailProfiles(): MemberDetailProfile[] {
+	const { staff, students } = getMembers();
+	const profiles = new Map<string, MemberDetailProfile>();
+
+	for (const member of staff) {
+		const slug = getMemberDetailSlugFromHref(member.href);
+		if (!slug) continue;
+		profiles.set(slug, {
+			slug,
+			kind: 'staff',
+			name: member.name,
+			nameEn: member.nameEn,
+			role: member.role,
+			roleEn: member.roleEn,
+			email: member.email,
+			href: member.href,
+		});
+	}
+
+	for (const member of students) {
+		const slug = getMemberDetailSlugFromHref(member.href);
+		if (!slug) continue;
+		const role = getStudentRole(member);
+		profiles.set(slug, {
+			slug,
+			kind: 'student',
+			name: member.name,
+			nameEn: member.nameEn,
+			role: role.ja,
+			roleEn: role.en,
+			email: member.email,
+			href: member.href,
+		});
+	}
+
+	return [...profiles.values()].sort((a, b) => a.slug.localeCompare(b.slug));
+}
+
+export function getMemberDetailProfileBySlug(
+	slug: string,
+): MemberDetailProfile | undefined {
+	return getMemberDetailProfiles().find((profile) => profile.slug === slug);
+}
 
 export function processMembers(data: MemberData, now: Date = new Date()) {
 	const currentStaff = data.staff.filter((s) => !s.endDate || new Date(s.endDate) > now);
@@ -96,16 +179,16 @@ export function processMembers(data: MemberData, now: Date = new Date()) {
 		if (s.endDate && new Date(s.endDate) <= now) {
 			const fy = getFiscalYear(s.endDate);
 			if (!alumniByYear[fy]) alumniByYear[fy] = [];
-			alumniByYear[fy].push({
-				name: s.name,
-				nameEn: s.nameEn,
-				role: s.role,
-				roleEn: s.roleEn,
-				gradDate: s.endDate,
-				href: s.href,
-				type: 'staff',
-				sortOrder: 0, // Staff first
-			});
+					alumniByYear[fy].push({
+						name: s.name,
+						nameEn: s.nameEn,
+						role: s.role,
+						roleEn: s.roleEn,
+						gradDate: s.endDate,
+						href: s.href,
+						type: 'staff',
+						sortOrder: 0, // Staff first
+					});
 		}
 	});
 

@@ -22,13 +22,6 @@ const pageHtmlModules = import.meta.glob("../content/pages/*.html", {
 	query: "?raw",
 	import: "default",
 }) as Record<string, () => Promise<string>>;
-const memberMarkdownModules = import.meta.glob(
-	"../content/member-details/*.md",
-) as Record<string, () => Promise<MarkdownModule>>;
-const memberHtmlModules = import.meta.glob("../content/member-details/*.html", {
-	query: "?raw",
-	import: "default",
-}) as Record<string, () => Promise<string>>;
 
 export function getStaticPaths() {
 	return [

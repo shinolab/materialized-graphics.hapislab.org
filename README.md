@@ -14,6 +14,8 @@
     - [メンバーの更新](#%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E3%81%AE%E6%9B%B4%E6%96%B0)
         - [学生](#%E5%AD%A6%E7%94%9F)
         - [スタッフ](#%E3%82%B9%E3%82%BF%E3%83%83%E3%83%95)
+        - [member個別ページ](#member個別ページ)
+    - [特殊ページの追加](#特殊ページの追加)
 - [🛠GitHubでのプルリクエスト PR の送り方](#github%E3%81%A7%E3%81%AE%E3%83%97%E3%83%AB%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88-pr-%E3%81%AE%E9%80%81%E3%82%8A%E6%96%B9)
     - [GitHub CLIを使った手順 推奨](#github-cli%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%9F%E6%89%8B%E9%A0%86-%E6%8E%A8%E5%A5%A8)
     - [承認と公開](#%E6%89%BF%E8%AA%8D%E3%81%A8%E5%85%AC%E9%96%8B)
@@ -237,6 +239,57 @@ imageAlt: xxxx # 画像の代替テキスト (必須)
 ```
 
 `endDate`が存在する場合, 卒業生リストに表示される. `endDate`が空の場合は在籍中のスタッフとして表示される.
+
+#### member個別ページ
+
+`src/content/member-details/<slug>.md` を作ると, `/members/<slug>` の個別ページが自動生成される.
+
+英語版を作る場合は `src/content/member-details/<slug>.en.md` を追加すると `/en/members/<slug>` が生成される. 英語版が無い場合は日本語本文が表示される.
+
+例:
+
+```md
+---
+title: タイトル
+description: 研究内容やプロフィールの概要
+---
+
+本文
+```
+
+リンクの張り方:
+
+- member 一覧からリンクしたい場合は, `students.yml` / `staff.yml` の `href` に最終公開URLを書く
+
+```yaml
+- name: 性 名
+  nameEn: First Last
+  href: /members/sample
+```
+
+### 特殊ページの追加
+
+旧サイトの `https://hapislab.org/airborne-ultrasound-tactile-display/` のような, ルート直下の個別ページを維持したい場合は `src/content/special-pages/<slug>.md` を作る.
+
+すると `/<slug>/` が自動生成される. 英語版は `src/content/special-pages/<slug>.en.md` で `/en/<slug>/` を生成できる.
+
+例:
+
+`src/content/special-pages/airborne-ultrasound-tactile-display.md`
+
+```md
+---
+title: Airborne Ultrasound Tactile Display
+description: 特殊ページの説明
+---
+
+本文
+```
+
+注意:
+
+- `members`, `publications`, `research-topics` など既存ページと衝突する slug は使えない
+- 特殊ページは研究テーマページとは別物として管理する
 
 ## 🛠GitHubでのプルリクエスト (PR) の送り方
 

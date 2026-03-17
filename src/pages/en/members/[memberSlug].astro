@@ -1,0 +1,48 @@
+---
+import DetailPageRenderer from "../../../components/DetailPageRenderer.astro";
+import {
+	getMemberDetailSlugs,
+	loadMemberDetailContent,
+} from "../../../lib/member-detail-content";
+import { getMemberDetailProfileBySlug } from "../../../lib/members";
+
+export function getStaticPaths() {
+	return getMemberDetailSlugs("en").map((memberSlug) => ({
+		params: { memberSlug },
+		props: { memberSlug },
+	}));
+}
+
+const { memberSlug } = Astro.props;
+const profile = getMemberDetailProfileBySlug(memberSlug);
+const content = await loadMemberDetailContent("en", memberSlug);
+
+const title = content.isFallback
+	? profile?.nameEn ||
+		profile?.name ||
+		content.frontmatter?.title ||
+		memberSlug
+	: (content.frontmatter?.title ??
+		profile?.nameEn ??
+		profile?.name ??
+		memberSlug);
+const description = content.isFallback
+	? undefined
+	: content.frontmatter?.description;
+const lead = content.isFallback ? undefined : content.frontmatter?.lead;
+---
+
+<DetailPageRenderer
+	title={title}
+	description={description}
+	lead={lead}
+	currentPath={`/en/members/${memberSlug}`}
+	locale="en"
+	eyebrow="Member"
+	ContentComponent={content.ContentComponent}
+	htmlContent={content.htmlContent}
+	fallbackNotice={content.isFallback
+		? "This page is not yet available in English. 日本語版の内容を表示しています。"
+		: undefined}
+	languageSwitchHref={`/members/${memberSlug}`}
+/>

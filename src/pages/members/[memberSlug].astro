@@ -1,0 +1,34 @@
+---
+import DetailPageRenderer from "../../components/DetailPageRenderer.astro";
+import {
+	getMemberDetailSlugs,
+	loadMemberDetailContent,
+} from "../../lib/member-detail-content";
+import { getMemberDetailProfileBySlug } from "../../lib/members";
+
+export function getStaticPaths() {
+	return getMemberDetailSlugs("ja").map((memberSlug) => ({
+		params: { memberSlug },
+		props: { memberSlug },
+	}));
+}
+
+const { memberSlug } = Astro.props;
+const profile = getMemberDetailProfileBySlug(memberSlug);
+const content = await loadMemberDetailContent("ja", memberSlug);
+
+const title = content.frontmatter?.title ?? profile?.name ?? memberSlug;
+const description = content.frontmatter?.description;
+const lead = content.frontmatter?.lead;
+---
+
+<DetailPageRenderer
+	title={title}
+	description={description}
+	lead={lead}
+	currentPath={`/members/${memberSlug}`}
+	eyebrow="メンバー"
+	ContentComponent={content.ContentComponent}
+	htmlContent={content.htmlContent}
+	languageSwitchHref={`/en/members/${memberSlug}`}
+/>

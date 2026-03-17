@@ -14,7 +14,6 @@ interface Props {
 	currentPath: string;
 	locale?: "ja" | "en";
 	eyebrow?: string;
-	metaItems: MetaItem[];
 	ContentComponent?: AstroComponentFactory;
 	htmlContent?: string;
 	fallbackNotice?: string;
@@ -28,7 +27,6 @@ const {
 	currentPath,
 	locale = "ja",
 	eyebrow,
-	metaItems,
 	ContentComponent,
 	htmlContent = "",
 	fallbackNotice,
@@ -46,19 +44,6 @@ const {
 	languageSwitchHref={languageSwitchHref}
 >
 	<div class="content-stack">
-		<section class="surface detail-meta">
-			<dl class="detail-meta__grid">
-				{
-					metaItems.map((item) => (
-						<div class="detail-meta__item">
-							<dt>{item.label}</dt>
-							<dd>{item.value}</dd>
-						</div>
-					))
-				}
-			</dl>
-		</section>
-
 		{
 			fallbackNotice && (
 				<aside class="surface notice-card" role="note">

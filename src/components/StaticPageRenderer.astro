@@ -1,8 +1,8 @@
 ---
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import PageFrame from "./PageFrame.astro";
-import MemberDirectory from "./MemberDirectory.astro";
-import PublicationTimeline from "./PublicationTimeline.astro";
+import Members from "./Members.astro";
+import Publications from "./Publications.astro";
 import TopicGrid from "./TopicGrid.astro";
 import AwardList from "./AwardList.astro";
 import { getResearchTopics } from "../lib/research-topics";
@@ -79,13 +79,10 @@ const shouldRenderIntro =
 		}
 
 		<div class="kind-content">
-			{kind === "members" && <MemberDirectory locale={locale} />}
+			{kind === "members" && <Members locale={locale} />}
 			{
 				kind === "publications" && (
-					<PublicationTimeline
-						publications={publications}
-						locale={locale}
-					/>
+					<Publications publications={publications} locale={locale} />
 				)
 			}
 			{kind === "awards" && <AwardList locale={locale} />}

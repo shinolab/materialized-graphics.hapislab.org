@@ -35,6 +35,83 @@
 
 ## 📝 コンテンツの更新方法
 
+### 発表論文の追加
+
+`src/data/publications.yml` を編集.
+種類によらず先頭から適当に追加して良い.
+
+よくわからない場合は既存のエントリを参考にして, フォーマットを合わせること.
+
+なお, 値にコロン":"が含まれる場合は全体をクオーテーションで囲む必要がある. 例: `title: 'Title: Subtitle'`
+
+追加で, `pages`とか`volume`とかのフィールドを追加しても良い. というか新規の場合は追加しておいてほしい.
+
+> TODO: Bibtex形式からの自動インポート機能を追加
+
+#### 雑誌論文
+
+```yaml
+- type: article
+  year: 2025
+  authors:
+    - First Last
+    - First Last
+  title: Title of the Paper
+  journal: Journal Name
+  doi: xxx/xxxxxx (optional, https://doi.org/ は入れないこと)
+  href: リンク (optional)
+  note: 補足情報 (optional)
+```
+
+doiがあって, `href`がない場合は自動的にdoiからリンクが生成される.
+
+#### 査読付き国際会議論文
+
+```yaml
+- type: inproceedings
+  year: 2025
+  authors:
+    - First Last
+    - First Last
+  title: Title of the Paper
+  booktitle: Conference Name
+  doi: xxx/xxxxxx (optional, https://doi.org/ は入れないこと)
+  href: リンク (optional)
+  note: 補足情報 (optional)
+```
+
+#### デモ
+
+```yaml
+- type: demos
+  year: 2025
+  authors:
+    - First Last
+    - First Last
+  title: Title of the Demo
+  booktitle: Conference Name
+  doi: xxx/xxxxxx (optional, https://doi.org/ は入れないこと)
+  href: リンク (optional)
+  note: 補足情報 (optional)
+```
+
+####​ 国内会議論文
+
+```yaml
+- type: domestic
+  year: 2025
+  authors:
+    ‐ 姓 名
+    ‐ 姓 名
+  title: タイトル
+  booktitle: 会議名
+  doi: xxx/xxxxxx (optional, https://doi.org/ は入れないこと)
+  href: リンク (optional)
+  note: 補足情報 (optional)
+```
+
+日本語しか想定してない
+
 ### Newsの更新
 
 `src/content/top/news/` 内に新しい Markdown ファイルを作成.
@@ -78,9 +155,6 @@ imageAlt: 二次元通信タイル # 画像の代替テキスト (必須)
 
 本文
 ```
-
-### 論文リストの更新
-
 
 ### 受賞リストの更新
 

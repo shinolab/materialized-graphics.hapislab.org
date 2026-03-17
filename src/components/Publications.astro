@@ -1,0 +1,325 @@
+---
+import type { Publication } from "../lib/site-data";
+
+interface Props {
+	publications: Publication[];
+	locale?: "ja" | "en";
+}
+
+const { publications, locale = "ja" } = Astro.props;
+
+const TYPE_ORDER = ["article", "inproceedings", "demos", "domestic"] as const;
+const visiblePublications =
+	locale === "en"
+		? publications.filter((publication) => publication.type !== "domestic")
+		: publications;
+
+const formatAuthors = (authors: string[], japaneseStyle: boolean) => {
+	if (authors.length === 0) return "";
+	if (authors.length === 1 || japaneseStyle) return authors.join(", ");
+	return `${authors.slice(0, -1).join(", ")} and ${authors.at(-1)}`;
+};
+
+const getCitationDisplay = (
+	publication: Publication,
+	locale: "ja" | "en",
+) => {
+	const japaneseStyle = publication.lang === "ja";
+	const venueDetails = [
+		publication.volume ? `vol. ${publication.volume}` : "",
+		publication.number ? `no. ${publication.number}` : "",
+		publication.pages ? `pp. ${publication.pages}` : "",
+	]
+		.filter(Boolean)
+		.join(", ");
+
+	return {
+		japaneseStyle,
+		authorsText: (() => {
+			const authors = formatAuthors(publication.authors, japaneseStyle);
+			if (!authors) return "";
+			return japaneseStyle ? `${authors}.` : `${authors},`;
+		})(),
+		titleText: japaneseStyle
+			? `${publication.title}.`
+			: `"${publication.title},"`,
+		venueName: publication.journal || publication.booktitle || "",
+		venueDetails,
+		doiText: publication.doi ? `doi: ${publication.doi}` : "",
+		languageNote:
+			locale === "en" && publication.lang === "ja" ? "(in Japanese)" : "",
+	};
+};
+
+const typeLabels = {
+	ja: {
+		article: "雑誌論文 / Original Journal Papers",
+		inproceedings:
+			"査読付き国際会議 / Refereed International Conference Papers",
+		demos: "デモ / Demos",
+		domestic: "国内口頭発表 / Domestic Conference Papers",
+		Others: "その他 / Others",
+	},
+	en: {
+		article: "Original Journal Papers",
+		inproceedings: "Refereed International Conference Papers",
+		demos: "Demos",
+		domestic: "Domestic Conference Papers",
+		Others: "Others",
+	},
+};
+
+const groupedByType = TYPE_ORDER.map((type) => {
+	const typePubs = visiblePublications.filter((p) => p.type === type);
+	if (typePubs.length === 0) return null;
+
+	const byYear = Array.from(
+		typePubs.reduce((groups, p) => {
+			const collection = groups.get(p.year) ?? [];
+			collection.push(p);
+			groups.set(p.year, collection);
+			return groups;
+		}, new Map<number, Publication[]>()),
+	).sort(([yearA], [yearB]) => yearB - yearA);
+
+	return { type, byYear };
+}).filter(
+	(group): group is { type: string; byYear: [number, Publication[]][] } =>
+		group !== null,
+);
+---
+
+<div class="publications-container">
+	<nav class="publication-toc surface">
+		<ul class="publication-toc__list">
+			{
+				groupedByType.map(({ type }) => (
+					<li class="publication-toc__item">
+						<a href={`#${type}`} class="publication-toc__link">
+							{
+								typeLabels[locale][
+									type as keyof (typeof typeLabels)["ja"]
+								]
+							}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</nav>
+
+	{
+		groupedByType.map(({ type, byYear }) => (
+			<section class="legacy-block" id={type}>
+				<h2 class="legacy-block__title">
+					{
+						typeLabels[locale][
+							type as keyof (typeof typeLabels)["ja"]
+						]
+					}
+				</h2>
+				<div class="publication-type-content">
+					{byYear.map(([year, items]) => (
+						<div class="publication-year-group">
+							<h3 class="publication-year-title">{year}</h3>
+							<div class="surface surface--table table-wrapper">
+								<table class="legacy-data-table legacy-data-table--publications">
+									<tbody>
+										{items.map((publication) => {
+											const citation = getCitationDisplay(
+												publication,
+												locale,
+											);
+											const CitationTag = publication.href
+												? "a"
+												: "div";
+											return (
+												<tr>
+													<td>
+														<CitationTag
+															href={
+																publication.href ||
+																undefined
+															}
+															target={
+																publication.href
+																	? "_blank"
+																	: undefined
+															}
+															rel={
+																publication.href
+																	? "noopener noreferrer"
+																	: undefined
+															}
+															class:list={[
+																"publication-citation",
+																publication.href &&
+																	"publication-citation--link",
+															]}
+														>
+															{citation.authorsText && (
+																<span class="citation-authors">
+																	{citation.authorsText}
+																</span>
+															)}
+															<span class="citation-title">
+																{citation.titleText}
+															</span>
+															<span class="citation-venue">
+																{citation.japaneseStyle ? (
+																	<>
+																		{citation.venueName && (
+																			<span class="venue-name--plain">
+																				{citation.venueName}
+																			</span>
+																		)}
+																		{citation.venueDetails &&
+																			`${
+																				citation.venueName
+																					? ". "
+																					: ""
+																			}${citation.venueDetails}`}
+																		{citation.doiText &&
+																			`${
+																				citation.venueName ||
+																				citation.venueDetails
+																					? ". "
+																					: ""
+																			}${citation.doiText}`}
+																	</>
+																) : (
+																	<>
+																		{citation.venueName && (
+																			<em class="venue-name">
+																				{citation.venueName}
+																			</em>
+																		)}
+																		{citation.venueDetails &&
+																			`${
+																				citation.venueName
+																					? ", "
+																					: ""
+																			}${citation.venueDetails}`}
+																		{citation.doiText &&
+																			` (${citation.doiText})`}
+																	</>
+																)}
+																{publication.note && (
+																	<span class="citation-note">
+																		{" "}
+																		[{publication.note}]
+																	</span>
+																)}
+																{citation.languageNote && (
+																	<span class="citation-note">
+																		{" "}
+																		{citation.languageNote}
+																	</span>
+																)}
+															</span>
+														</CitationTag>
+													</td>
+												</tr>
+											);
+										})}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					))}
+				</div>
+			</section>
+		))
+	}</div>
+
+<style>
+	.publications-container {
+		display: flex;
+		flex-direction: column;
+		gap: 3rem;
+	}
+	.legacy-block {
+		scroll-margin-top: 120px;
+	}
+	.publication-toc {
+		padding: 1.5rem;
+	}
+	.publication-toc__list {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.publication-toc__link {
+		color: var(--primary, #00475a);
+		text-decoration: none;
+		font-weight: 500;
+	}
+	.publication-toc__link:hover {
+		text-decoration: underline;
+	}
+	.publication-type-content {
+		padding: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		background: var(--surface, #fff);
+	}
+	.publication-year-group {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+	.publication-year-title {
+		margin: 0;
+		padding: 0 0 0 0.75rem;
+		font-size: 1.1rem;
+		font-weight: 700;
+		border-left: 4px solid var(--primary, #00475a);
+		color: var(--text, #232323);
+		line-height: 1.2;
+	}
+
+	/* Table override */
+	.legacy-data-table--publications tr,
+	.legacy-data-table--publications tr:nth-child(even) {
+		background: transparent !important;
+	}
+	.legacy-data-table--publications td {
+		border-bottom: 0 !important;
+		padding: 0.4rem 0;
+	}
+
+	.publication-citation {
+		display: block;
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: var(--text, #232323);
+		text-decoration: none;
+	}
+	.publication-citation--link {
+		color: var(--accent, #0d7288);
+	}
+	.publication-citation--link:hover {
+		text-decoration: underline;
+	}
+	.citation-authors {
+		margin-right: 0.35rem;
+	}
+	.citation-title {
+		font-weight: 500;
+		margin-right: 0.35rem;
+	}
+	.venue-name {
+		font-style: italic;
+	}
+	.venue-name--plain {
+		font-style: normal;
+	}
+	.citation-note {
+		color: var(--text-subtle, #666);
+		font-size: 0.9em;
+	}
+</style>

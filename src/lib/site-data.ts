@@ -1,32 +1,41 @@
-import { readCsv } from './csv';
-import publicationsCsv from '../data/publications.csv?raw';
+import yaml from 'js-yaml';
+import publicationsYaml from '../data/publications.yml?raw';
 
 export interface Publication {
 	year: number;
-	category: string;
+	type: 'article' | 'inproceedings' | 'demos' | 'domestic' | 'Others';
 	title: string;
-	authors: string;
-	venue: string;
-	href: string;
+	authors: string[];
+	lang?: 'ja' | 'en';
+	journal?: string;
+	booktitle?: string;
+	volume?: string;
+	number?: string;
+	pages?: string;
+	doi?: string;
+	note?: string;
+	href?: string;
 }
 
-function requiredField(row: Record<string, string>, field: string): string {
-	const value = row[field]?.trim();
-
-	if (!value) {
-		throw new Error(`Missing required field "${field}" in CSV row.`);
-	}
-
-	return value;
-}
-
-export const publications: Publication[] = readCsv(publicationsCsv)
+export const publications: Publication[] = (yaml.load(publicationsYaml) as Publication[] || [])
 	.map((row) => ({
-		year: Number.parseInt(requiredField(row, 'year'), 10),
-		category: requiredField(row, 'category'),
-		title: requiredField(row, 'title'),
-		authors: requiredField(row, 'authors'),
-		venue: requiredField(row, 'venue'),
-		href: row.href?.trim() ?? '',
+		year: typeof row.year === 'number' ? row.year : Number.parseInt(row.year as any, 10) || 0,
+		type: (row.type as any) || 'Others',
+		title: row.title?.trim() || '',
+		authors: Array.isArray(row.authors) ? row.authors : [],
+		lang:
+			row.type === 'domestic'
+				? 'ja'
+				: row.lang === 'ja' || row.lang === 'en'
+					? row.lang
+					: undefined,
+		journal: row.journal?.trim(),
+		booktitle: row.booktitle?.trim(),
+		volume: row.volume?.toString(),
+		number: row.number?.toString(),
+		pages: row.pages?.trim(),
+		doi: row.doi?.trim(),
+		note: row.note?.trim(),
+		href: row.href?.trim() || (row.doi ? `https://doi.org/${row.doi.trim()}` : ''),
 	}))
 	.sort((left, right) => right.year - left.year);

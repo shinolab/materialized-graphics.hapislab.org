@@ -300,22 +300,28 @@ description: 特殊ページの説明
 
 事前に [GitHub CLI](https://cli.github.com/) をインストールしておくこと.
 
-1. **最新の情報を取得**: 自分のPC上の `main` ブランチを最新する
+
+1. **リポジトリをclone**: まだクローンしていない場合のみ. すでにcloneしてある場合は, cloneしたディレクトリに移動する.
+   ```sh
+   git clone https://github.com/shinolab/hapislab-org-homepage.git
+   cd hapislab-org-homepage
+   ```
+2. **最新の情報を取得**: 自分のPC上の `main` ブランチを最新する
    ```sh
    git switch main
    git pull origin main
    ```
-2. **ブランチを作成**: 作業用のブランチを新しく作成. ブランチ名はわかりやすいものにすること.
+3. **ブランチを作成**: 作業用のブランチを新しく作成. ブランチ名はわかりやすいものにすること.
    ```sh
    git switch -c my-update-name
    ```
-3. **ファイルを編集し, 保存**
-4. **変更をコミット**:
+4. **ファイルを編集し, 保存**
+5. **変更をコミット**:
    ```sh
    git add .
    git commit -m "わかりやすいコメント"
    ```
-5. **プルリクエストを作成**:
+6. **プルリクエストを作成**:
    ```sh
    gh pr create --web
    ```

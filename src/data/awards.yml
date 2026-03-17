@@ -1,3 +1,15 @@
+- year: 2025
+  month: 12
+  day: 12
+  award: 優秀講演賞
+  org: SICE SI2025
+  title: 空中超音波による把持物体を介した段差状触感の提示
+  recipients:
+    - 荒川 岳斗
+    - 岩佐 俊希
+    - 牧野 泰才
+    - 篠田 裕之
+
 - year: 2024
   month: 9
   day: 13

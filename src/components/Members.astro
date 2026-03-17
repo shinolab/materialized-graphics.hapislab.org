@@ -4,6 +4,7 @@ import {
 	processMembers,
 	type DegreeKey,
 } from "../lib/members";
+import { asRootRelativePath, withBasePath } from "../lib/urls";
 
 interface Props {
 	locale?: "ja" | "en";
@@ -47,6 +48,9 @@ const formatThesis = (thesis?: string, thesisEn?: string) => {
 	if (thesis && thesisEn) return `${thesis} (${thesisEn})`;
 	return thesis || thesisEn || "";
 };
+
+const resolveMemberHref = (href?: string) =>
+	withBasePath(asRootRelativePath(href)) ?? href;
 ---
 
 <div class="content-stack">
@@ -66,8 +70,8 @@ const formatThesis = (thesis?: string, thesisEn?: string) => {
 											: s.role}
 									</td>
 									<td style="width: 30%;">
-										{s.href ? (
-											<a href={s.href}>
+										{resolveMemberHref(s.href) ? (
+											<a href={resolveMemberHref(s.href)}>
 												{locale === "en"
 													? s.nameEn || s.name
 													: s.name}
@@ -104,8 +108,8 @@ const formatThesis = (thesis?: string, thesisEn?: string) => {
 								{students.map((st) => (
 									<tr>
 										<td style="width: 30%;">
-											{st.href ? (
-												<a href={st.href}>
+											{resolveMemberHref(st.href) ? (
+												<a href={resolveMemberHref(st.href)}>
 													{locale === "en" ? st.nameEn || st.name : st.name}
 												</a>
 											) : (
@@ -140,8 +144,8 @@ const formatThesis = (thesis?: string, thesisEn?: string) => {
 												{locale === "en" ? al.roleEn : al.role}
 											</td>
 											<td style="width: 20%;">
-												{al.href ? (
-													<a href={al.href}>
+												{resolveMemberHref(al.href) ? (
+													<a href={resolveMemberHref(al.href)}>
 														{locale === "en" ? al.nameEn || al.name : al.name}
 													</a>
 												) : (

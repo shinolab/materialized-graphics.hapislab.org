@@ -259,12 +259,12 @@ description: 研究内容やプロフィールの概要
 
 リンクの張り方:
 
-- member 一覧からリンクしたい場合は, `students.yml` / `staff.yml` の `href` に最終公開URLを書く
+- member 一覧からリンクしたい場合は, `students.yml` / `staff.yml` の `href` に最終公開URLを書く (相対パスで `/members/<slug>` としても良い).
 
 ```yaml
 - name: 性 名
   nameEn: First Last
-  href: /members/sample
+  href: /members/<slug>
 ```
 
 ### 特殊ページの追加

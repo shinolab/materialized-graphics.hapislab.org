@@ -2,6 +2,18 @@ function hasProtocol(path: string): boolean {
 	return /^[a-z][a-z\d+.-]*:/i.test(path) || path.startsWith('//');
 }
 
+export function asRootRelativePath(path?: string): string | undefined {
+	if (!path || path.startsWith('#') || hasProtocol(path) || path.startsWith('/')) {
+		return path;
+	}
+
+	if (path.startsWith('?')) {
+		return path;
+	}
+
+	return `/${path.replace(/^\/+/, '')}`;
+}
+
 function getBasePath(): string {
 	const baseUrl = import.meta.env.BASE_URL;
 	if (!baseUrl || baseUrl === '/') {

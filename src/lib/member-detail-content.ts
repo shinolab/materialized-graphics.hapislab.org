@@ -19,7 +19,7 @@ export const memberDetailMarkdownModules = import.meta.glob(
 ) as Record<string, () => Promise<MemberDetailMarkdownModule>>;
 
 export const memberDetailHtmlModules = import.meta.glob(
-	'../content/member-details/*.html',
+	'../content/members/*.html',
 	{
 		query: '?raw',
 		import: 'default',
@@ -40,7 +40,7 @@ export function loadMemberDetailContent(
 ) {
 	return loadLocalizedContent({
 		locale,
-		basePath: `../content/member-details/${slug}`,
+		basePath: `../content/members/${slug}`,
 		markdownModules: memberDetailMarkdownModules,
 		htmlModules: memberDetailHtmlModules,
 	});

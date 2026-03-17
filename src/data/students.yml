@@ -611,7 +611,11 @@
 # 2020年度
 - name: 松林 篤
   nameEn: Atsushi Matsubayashi
+  href: /members/matsubayashi
   degrees:
+    M:
+      grad: 2017-03-31
+      thesis: 空中立体像との触覚インタラクション
     D:
       grad: 2021-03-31
       thesis: 空中超音波制御による手指表面への触覚レンダリング
@@ -828,6 +832,7 @@
       thesisEn: Power and Signal Transmission Using Two-Dimensional Waveguide
 - name: 神垣 貴晶
   nameEn: Takaaki Kamigaki
+  href: /members/kamigaki
   degrees:
     D:
       grad: 2019-03-31
@@ -1015,12 +1020,6 @@
     M:
       grad: 2017-03-31
       thesis: 運筆動作誘導による文字ディスプレイ
-- name: 松林 篤
-  nameEn: Atsushi Matsubayashi
-  degrees:
-    M:
-      grad: 2017-03-31
-      thesis: 空中立体像との触覚インタラクション
 - name: 新井 綾太
   nameEn: Ryota Arai
   degrees:

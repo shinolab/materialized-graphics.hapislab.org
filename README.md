@@ -249,9 +249,9 @@ imageAlt: xxxx # 画像の代替テキスト (必須)
 
 #### member個別ページ
 
-`src/content/member-details/<slug>.md` を作ると, `/members/<slug>` の個別ページが自動生成される.
+`src/content/members/<slug>.md` を作ると, `/members/<slug>` の個別ページが自動生成される.
 
-英語版を作る場合は `src/content/member-details/<slug>.en.md` を追加すると `/en/members/<slug>` が生成される. 英語版が無い場合は日本語本文が表示される.
+英語版を作る場合は `src/content/members/<slug>.en.md` を追加すると `/en/members/<slug>` が生成される. 英語版が無い場合は日本語本文が表示される.
 
 例:
 

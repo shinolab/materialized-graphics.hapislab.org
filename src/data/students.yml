@@ -245,7 +245,7 @@
 # 2024年度
 - name: 小丹枝 涼哉
   nameEn: Ryoya Onishi
-  href: https://hapislab.org/ryoyaonishi
+  href: /members/onishi
   degrees:
     M:
       grad: 2022-03-31
@@ -621,7 +621,11 @@
       thesis: 空中超音波制御による手指表面への触覚レンダリング
 - name: 中島 允
   nameEn: Mitsuru Nakajima
+  href: /members/nakajima
   degrees:
+    M:
+      grad: 2018-03-31
+      thesis: 音響流ベッセルビームを用いた遠隔冷覚提示の研究
     D:
       grad: 2021-03-31
       thesis: 空中超音波フェーズドアレイによる遠隔冷覚提示
@@ -742,7 +746,7 @@
       thesisEn: Producing Click Sensation by Airborne Ultrasound
 - name: 古本 拓朗
   nameEn: Takuro Furumoto
-  href: http://hapislab.org/takuro_furumoto
+  href: /members/furumoto
   degrees:
     D:
       grad: 2020-03-31
@@ -828,6 +832,9 @@
   degrees:
     M:
       grad: 2016-03-31
+      thesis: 二次元通信タイル間接続のための近接コネクタ
+    D:
+      grad: 2019-03-31
       thesis: 2次元伝送路による電力・信号伝送とその応用
       thesisEn: Power and Signal Transmission Using Two-Dimensional Waveguide
 - name: 神垣 貴晶
@@ -909,6 +916,7 @@
 # 2017年度
 - name: 井上 碩
   nameEn: Seki Inoue
+  href: /members/inoue
   degrees:
     D:
       grad: 2018-03-31
@@ -956,12 +964,6 @@
     M:
       grad: 2018-03-31
       thesis: VR環境における視触覚相互作用を利用した硬さ提示の研究
-- name: 中島 允
-  nameEn: Mitsuru Nakajima
-  degrees:
-    M:
-      grad: 2018-03-31
-      thesis: 音響流ベッセルビームを用いた遠隔冷覚提示の研究
 - name: 朱 婭
   nameEn: Ya Zhu
   degrees:
@@ -1095,12 +1097,6 @@
     M:
       grad: 2016-03-31
       thesis: ３次元空中立体像に重畳する断面映像提示の研究
-- name: 増田 祐一
-  nameEn: Yuichi Masuda
-  degrees:
-    M:
-      grad: 2016-03-31
-      thesis: 二次元通信タイル間接続のための近接コネクタ
 - name: 三瓶 直恵
   nameEn: Naoe Sampei
   degrees:
@@ -1154,6 +1150,7 @@
       thesisEn: A Study on Tactile Presentation Using Edge Stimulation Method
 - name: 藤原 正浩
   nameEn: Masahiro Fujiwara
+  href: /members/fujiwara
   degrees:
     D:
       grad: 2015-03-31
@@ -1172,6 +1169,7 @@
       thesis: 空中音響放射圧による物体浮遊制御
 - name: 井上 碩
   nameEn: Seki Inoue
+  href: /members/inoue
   degrees:
     M:
       grad: 2015-03-31

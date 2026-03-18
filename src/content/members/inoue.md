@@ -49,7 +49,7 @@ mail: inoue@hapis.k.u-tokyo.ac.jp
 
 1. Seki Inoue, Yasutoshi Makino and Hiroyuki Shinoda: "Mid-Air Ultrasonic Pressure Control on Skin by Adaptive Focusing", EuroHaptics 2016
 2. Yasutoshi Makino, Yoshikazu Furuyama, Seki Inoue and Hiroyuki Shinoda: "Mutual Tele-Environment: Realtime 3D Image Transfer with Force Feedback", ACM CHI 2016
-3. [Seki Inoue, Yasutoshi Makino and Hiroyuki Shinoda: "Active Touch Perception Produced by Airborne Ultrasonic Haptic Hologram", 2015 IEEE World Haptics Conference](http://hapislab.org/public/hiroyuki_shinoda/research/pdf/WHC2015/WHC15_inoue.pdf)
+3. [Seki Inoue, Yasutoshi Makino and Hiroyuki Shinoda: "Active Touch Perception Produced by Airborne Ultrasonic Haptic Hologram", 2015 IEEE World Haptics Conference](https://drive.google.com/file/d/1bvZg-uldmHakDNDBW4rOjlQ_G15p1tQF/view?usp=drive_link)
 4. [Seki Inoue and Hiroyuki Shinoda: "A Pinchable Aerial Virtual Sphere by Acoustic Ultrasound Stationary Wave", 2014 IEEE Haptics Symposium Proceedings, Houston, Texas, Feb. 2014.](http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&arnumber=6775437)
 5. [Seki Inoue, Koseki Kobayashi Kirschvinkand, Yasuaki Monnai, Keisuke Hasegawa, Yasutoshi Makino and Hiroyuki Shinoda: "HORN: The Hapt-Optic Reconstruction", 2014 ACM SIGGRAPH Emerging Technologies, Vancouver, Canada, Aug. 2014.](http://dl.acm.org/citation.cfm?id=2614092)
 6. Seki Inoue, Yasutoshi Makino and Hiroyuki Shinoda: "An Airborne Ultrasonic 3D Tactile Image by Time Reversal Field Rendering", 2014 IEEE SICE Annual Conference, Hokkaido, Japan, Sep. 2014

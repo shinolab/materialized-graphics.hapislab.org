@@ -20,19 +20,28 @@ const {
 
 const citation = getPublicationCitationDisplay(publication, locale);
 const CitationTag = publication.href ? "a" : fallbackTag;
-const japaneseVenueParts = [
-	citation.year,
-	citation.venueDetails,
-	citation.eventDateText,
-	citation.locationText,
-	citation.doiText,
-].filter(Boolean);
-const englishVenueParts = [
-	citation.year,
-	citation.venueDetails,
-	citation.eventDateText,
-	citation.locationText,
-].filter(Boolean);
+const isArticle = publication.type === "article";
+const japaneseVenueParts = (
+	isArticle
+		? [citation.venueDetails, citation.year, citation.doiText]
+		: [
+				citation.year,
+				citation.venueDetails,
+				citation.eventDateText,
+				citation.locationText,
+				citation.doiText,
+			]
+).filter(Boolean);
+const englishVenueParts = (
+	isArticle
+		? [citation.venueDetails, citation.year]
+		: [
+				citation.year,
+				citation.venueDetails,
+				citation.eventDateText,
+				citation.locationText,
+			]
+).filter(Boolean);
 ---
 
 <CitationTag

@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 import tempfile
+import unicodedata
 from io import StringIO
 from pathlib import Path
 from typing import Any
@@ -204,6 +206,26 @@ def normalize_url(value: Any) -> str:
     text = text.replace("http://dx.doi.org/", "https://doi.org/")
     text = text.replace("http://doi.org/", "https://doi.org/")
     return text
+
+
+def slugify_refid_part(value: Any) -> str:
+    text = unicodedata.normalize("NFKC", normalize_whitespace(value)).casefold()
+    replacements = {
+        "\u2010": "-",
+        "\u2011": "-",
+        "\u2012": "-",
+        "\u2013": "-",
+        "\u2014": "-",
+        "\u2212": "-",
+        "/": "-",
+        "_": "-",
+    }
+    for source, target in replacements.items():
+        text = text.replace(source, target)
+    text = re.sub(r"[^\w\s-]", "", text)
+    text = re.sub(r"\s+", "-", text)
+    text = re.sub(r"-{2,}", "-", text)
+    return text.strip("-")
 
 
 def strip_author_marker(value: Any) -> str:
@@ -621,6 +643,39 @@ def validate_new_entry_fields(fetched_fields: dict[str, Any]) -> None:
         raise ValueError(f"metadata for new entry is missing required fields: {joined_keys}")
 
 
+def generate_ref_id(fetched_fields: dict[str, Any], publications: CommentedSeq) -> str:
+    authors = fetched_fields.get("authors")
+    first_author = ""
+    if isinstance(authors, list) and authors:
+        first_author = strip_author_marker(authors[0])
+    else:
+        first_author = strip_author_marker(authors)
+
+    author_tokens = normalize_whitespace(first_author).split()
+    author_part_source = author_tokens[-1] if len(author_tokens) > 1 else first_author
+    author_part = slugify_refid_part(author_part_source) or "publication"
+
+    year_part = slugify_refid_part(fetched_fields.get("year")) or "unknown-year"
+
+    title = normalize_whitespace(fetched_fields.get("title"))
+    title_token = title.split(maxsplit=1)[0] if title else ""
+    title_part = slugify_refid_part(title_token) or "untitled"
+
+    base_ref_id = f"{author_part}-{year_part}-{title_part}"
+    existing_ref_ids = {
+        normalize_whitespace(entry.get("refId"))
+        for entry in publications
+        if isinstance(entry, CommentedMap) and normalize_whitespace(entry.get("refId"))
+    }
+    if base_ref_id not in existing_ref_ids:
+        return base_ref_id
+
+    suffix = 2
+    while f"{base_ref_id}-{suffix}" in existing_ref_ids:
+        suffix += 1
+    return f"{base_ref_id}-{suffix}"
+
+
 def find_entry_end_insert_index(
     original_lines: list[str], entry_start_line: int, next_entry_start_line: int
 ) -> int:
@@ -837,6 +892,8 @@ def main() -> int:
             if "doi" not in fetched_fields:
                 fetched_fields["doi"] = doi_filter
             validate_new_entry_fields(fetched_fields)
+            if "refId" not in fetched_fields or not normalize_whitespace(fetched_fields["refId"]):
+                fetched_fields["refId"] = generate_ref_id(fetched_fields, publications)
         except (DOIError, ValueError, TypeError, requests.RequestException) as exc:
             print(
                 (
@@ -861,7 +918,7 @@ def main() -> int:
             print(
                 (
                     f"[PREPEND] doi={doi_filter}: inserted a new entry at the top "
-                    f"using backend={args.backend}."
+                    f"using backend={args.backend} (refId={fetched_fields['refId']})."
                 ),
                 file=sys.stderr,
             )

@@ -2,6 +2,14 @@
 
 このガイドでは, 篠田・牧野研究室ホームページの各コンテンツを更新・追加する方法について詳しく説明します.
 
+ ${\color{red} \text{重要: 変更を加える前に, 最新の main ブランチを取得し, 作業用のブランチで編集を行ってください.}}$
+
+```
+git switch main
+git pull origin main
+git switch -c update-my-content
+```
+
 - [一般的な注意](#一般的な注意)
 - [発表論文の追加 (publications.yml)](#発表論文の追加-publicationsyml)
     - [PublicationRef コンポーネントでの参照](#publicationref-コンポーネントでの参照)

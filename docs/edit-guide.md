@@ -86,17 +86,6 @@ import MyComponent from "../../components/MyComponent.astro";
 ## 発表論文の追加 (publications.yml)
 
 `src/data/publications.yml` を編集します. 
-YAML形式で, 以下のフィールドを持つオブジェクトをリストに追加します.
-
-### 共通の注意点 (YAML)
-- 値にコロン `:` が含まれる場合は, 文字列全体をクォーテーションで囲んでください.
-  - ⭕ `title: "Title: Subtitle"`
-  - ❌ `title: Title: Subtitle`
-- インデントは半角スペース2つで統一してください.
-
-### 論文の種類別のテンプレート
-
-**共通点として, `volume`, `number`, `pages`, `eventDate`, `location` などのフィールドも可能な限り追加してください.**
 
 ### DOIからの自動生成
 
@@ -113,6 +102,16 @@ uv run python doi2pub.py <DOI>
 
 `crossref`に対応している場合 (ACMとか), `--crossref` オプションを付けると, 取得できる情報が増える(かもしれない).
 
+### 共通の注意点 (YAML)
+- 値にコロン `:` が含まれる場合は, 文字列全体をクォーテーションで囲んでください.
+  - ⭕ `title: "Title: Subtitle"`
+  - ❌ `title: Title: Subtitle`
+- インデントは半角スペース2つで統一してください.
+
+### 論文の種類別のテンプレート
+
+**共通点として, `volume`, `number`, `pages`, `eventDate`, `location` などのフィールドも可能な限り追加してください.**
+
 #### 雑誌論文 (`type: article`)
 ```yaml
 - type: article
@@ -126,6 +125,7 @@ uv run python doi2pub.py <DOI>
   number: 4
   pages: "567-589"
   doi: "xxx/xxxxxx" # https://doi.org/ は含めない
+  note: 補足情報     # 末尾に追記されます
   href: "https://..." # DOIがある場合は自動生成されるため省略可
   refId: "unique-id" # MDXから参照する場合に指定
 ```

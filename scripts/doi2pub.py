@@ -8,6 +8,7 @@ import tempfile
 from io import StringIO
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 import bibtexparser
 import requests
@@ -38,6 +39,7 @@ FIELD_ORDER = [
     "number",
     "issue",
     "pages",
+    "eventDate",
     "articleno",
     "numpages",
     "address",
@@ -56,6 +58,7 @@ COMPARISON_KEYS = {
     "number",
     "issue",
     "pages",
+    "eventDate",
     "publisher",
     "series",
     "address",
@@ -66,10 +69,14 @@ COMPARISON_KEYS = {
 
 TYPE_MAP = {
     "article": "article",
+    "book-chapter": "inproceedings",
     "conference": "inproceedings",
+    "conference-paper": "inproceedings",
     "inbook": "inproceedings",
     "incollection": "inproceedings",
     "inproceedings": "inproceedings",
+    "journal-article": "article",
+    "proceedings-article": "inproceedings",
     "proceedings": "inproceedings",
 }
 
@@ -79,13 +86,14 @@ def parse_args() -> argparse.Namespace:
         description=(
             "Fill missing fields in src/data/publications.yml from DOI metadata. "
             "Entries with conflicting existing data are reported and skipped unless "
-            "--force is used."
+            "--force is used. If a positional DOI is provided and it does not exist in "
+            "the YAML yet, a new entry is inserted at the top."
         )
     )
     parser.add_argument(
         "doi",
         nargs="?",
-        help="If provided, only process the entry whose DOI matches this value.",
+        help="If provided, only process the matching DOI entry, or insert a new one at the top if absent.",
     )
     parser.add_argument(
         "--yaml",
@@ -112,12 +120,26 @@ def parse_args() -> argparse.Namespace:
         help="Warn on conflicts and overwrite conflicting existing fields.",
     )
     parser.add_argument(
+        "--backend",
+        choices=("doi2bib3", "crossref"),
+        default="doi2bib3",
+        help="Metadata backend to use when resolving DOI data.",
+    )
+    parser.add_argument(
+        "--crossref",
+        action="store_true",
+        help="Shortcut for --backend crossref.",
+    )
+    parser.add_argument(
         "--timeout",
         type=int,
         default=15,
         help="Timeout passed to doi2bib3.fetch_bibtex().",
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.crossref:
+        args.backend = "crossref"
+    return args
 
 
 def build_yaml() -> YAML:
@@ -297,6 +319,236 @@ def parse_bibtex_entry(bibtex: str) -> dict[str, Any]:
     return parsed
 
 
+def pick_first_text(values: Any) -> str:
+    if isinstance(values, list):
+        for value in values:
+            text = normalize_whitespace(value)
+            if text:
+                return text
+        return ""
+    return normalize_whitespace(values)
+
+
+def join_nonempty(parts: list[str], separator: str) -> str:
+    return separator.join(part for part in parts if normalize_whitespace(part))
+
+
+def format_crossref_author(author: dict[str, Any]) -> str:
+    given = normalize_whitespace(author.get("given"))
+    family = normalize_whitespace(author.get("family"))
+    name = join_nonempty([given, family], " ")
+    if name:
+        return name
+    return normalize_whitespace(author.get("name"))
+
+
+def first_crossref_year(message: dict[str, Any]) -> int | str | None:
+    for key in (
+        "issued",
+        "published-print",
+        "published-online",
+        "published",
+        "created",
+    ):
+        date_parts = message.get(key, {}).get("date-parts")
+        if not date_parts or not date_parts[0]:
+            continue
+        year = date_parts[0][0]
+        if isinstance(year, int):
+            return year
+        text = normalize_whitespace(year)
+        if text:
+            return int(text) if text.isdigit() else text
+    return None
+
+
+def crossref_assertions(message: dict[str, Any]) -> dict[str, str]:
+    result: dict[str, str] = {}
+    for assertion in message.get("assertion", []):
+        name = normalize_whitespace(assertion.get("name"))
+        value = normalize_whitespace(assertion.get("value"))
+        if name and value:
+            result[name] = value
+    return result
+
+
+def parse_crossref_event_date(assertions: dict[str, str]) -> str:
+    start = assertions.get("conference_start_date", "")
+    end = assertions.get("conference_end_date", "")
+    if start and end:
+        return f"{start} - {end}"
+    return start or end
+
+
+def parse_crossref_location(
+    message: dict[str, Any], assertions: dict[str, str]
+) -> tuple[str, str]:
+    event = message.get("event", {})
+    event_location = normalize_whitespace(event.get("location"))
+    if event_location:
+        location = event_location
+    else:
+        location = join_nonempty(
+            [
+                assertions.get("conference_city", ""),
+                assertions.get("conference_country", ""),
+            ],
+            ", ",
+        )
+
+    address = normalize_whitespace(message.get("publisher-location"))
+    return address, location
+
+
+def parse_crossref_booktitle(message: dict[str, Any], assertions: dict[str, str]) -> str:
+    conference_name = assertions.get("conference_name", "")
+    conference_acronym = assertions.get("conference_acronym", "")
+    if conference_name:
+        normalized_name = normalize_text_for_compare(conference_name)
+        normalized_acronym = normalize_text_for_compare(conference_acronym)
+        if conference_acronym and normalized_acronym not in normalized_name:
+            return f"{conference_name} ({conference_acronym})"
+        return conference_name
+
+    container_titles = [
+        normalize_whitespace(value)
+        for value in message.get("container-title", [])
+        if normalize_whitespace(value)
+    ]
+    if container_titles:
+        container_title = container_titles[-1] if len(container_titles) > 1 else container_titles[0]
+        container_title = container_title.removeprefix("Proceedings of the ")
+        container_title = container_title.removeprefix("Proceedings of ")
+        normalized_title = normalize_text_for_compare(container_title)
+        normalized_acronym = normalize_text_for_compare(conference_acronym)
+        if conference_acronym and normalized_acronym not in normalized_title:
+            return f"{container_title} ({conference_acronym})"
+        return container_title
+
+    event_name = normalize_whitespace(message.get("event", {}).get("name"))
+    if event_name:
+        return event_name
+
+    return ""
+
+
+def parse_crossref_series(
+    message: dict[str, Any], assertions: dict[str, str], booktitle: str
+) -> str:
+    event_acronym = normalize_whitespace(message.get("event", {}).get("acronym"))
+    if event_acronym:
+        return event_acronym
+
+    conference_acronym = assertions.get("conference_acronym", "")
+    if conference_acronym:
+        return conference_acronym
+
+    container_titles = [
+        normalize_whitespace(value)
+        for value in message.get("container-title", [])
+        if normalize_whitespace(value)
+    ]
+    for title in container_titles:
+        if not values_match("booktitle", title, booktitle):
+            return title
+    return ""
+
+
+def parse_crossref_message(message: dict[str, Any]) -> dict[str, Any]:
+    parsed: dict[str, Any] = {}
+    mapped_type = TYPE_MAP.get(normalize_whitespace(message.get("type")).lower())
+    if mapped_type:
+        parsed["type"] = mapped_type
+
+    year = first_crossref_year(message)
+    if year is not None:
+        parsed["year"] = year
+
+    authors = []
+    for author in message.get("author", []):
+        formatted_author = format_crossref_author(author)
+        if formatted_author:
+            authors.append(formatted_author)
+    if authors:
+        parsed["authors"] = authors
+
+    title = pick_first_text(message.get("title"))
+    if title:
+        parsed["title"] = title
+
+    doi = normalize_doi(message.get("DOI"))
+    if doi:
+        parsed["doi"] = doi
+
+    href = normalize_url(
+        message.get("URL")
+        or message.get("resource", {}).get("primary", {}).get("URL")
+    )
+    if href:
+        parsed["href"] = href
+
+    for source_key, target_key in (
+        ("publisher", "publisher"),
+        ("volume", "volume"),
+        ("issue", "number"),
+        ("article-number", "articleno"),
+    ):
+        value = normalize_whitespace(message.get(source_key))
+        if value:
+            parsed[target_key] = value
+
+    pages = normalize_whitespace(message.get("page"))
+    if pages:
+        parsed["pages"] = normalize_pages(pages)
+
+    assertions = crossref_assertions(message)
+    address, location = parse_crossref_location(message, assertions)
+    if address:
+        parsed["address"] = address
+    if location:
+        parsed["location"] = location
+
+    event_date = parse_crossref_event_date(assertions)
+    if event_date:
+        parsed["eventDate"] = event_date
+
+    if parsed.get("type") == "article":
+        journal = pick_first_text(message.get("container-title"))
+        if journal:
+            parsed["journal"] = journal
+    else:
+        booktitle = parse_crossref_booktitle(message, assertions)
+        if booktitle:
+            parsed["booktitle"] = booktitle
+        series = parse_crossref_series(message, assertions, booktitle)
+        if series:
+            parsed["series"] = series
+
+    return parsed
+
+
+def fetch_crossref_message(doi: str, timeout: int) -> dict[str, Any]:
+    response = requests.get(
+        f"https://api.crossref.org/works/{quote(doi, safe='')}",
+        headers={"Accept": "application/json", "User-Agent": "doi2pub/1.0"},
+        timeout=timeout,
+    )
+    response.raise_for_status()
+    payload = response.json()
+    message = payload.get("message")
+    if not isinstance(message, dict):
+        raise ValueError("Crossref response did not contain a work message.")
+    return message
+
+
+def fetch_metadata(doi: str, backend: str, timeout: int) -> dict[str, Any]:
+    if backend == "crossref":
+        return parse_crossref_message(fetch_crossref_message(doi, timeout))
+
+    bibtex = fetch_bibtex(doi, timeout=timeout)
+    return parse_bibtex_entry(bibtex)
+
+
 def detect_conflicts(
     entry: CommentedMap, fetched_fields: dict[str, Any]
 ) -> list[tuple[str, Any, Any]]:
@@ -328,12 +580,45 @@ def build_snippet_yaml() -> YAML:
     return yaml
 
 
+def build_ordered_entry(fields: dict[str, Any]) -> CommentedMap:
+    ordered = CommentedMap()
+    for key in FIELD_ORDER:
+        if key in fields:
+            ordered[key] = fields[key]
+    for key, value in fields.items():
+        if key not in ordered:
+            ordered[key] = value
+    return ordered
+
+
 def render_field_block(key: str, value: Any) -> list[str]:
     snippet_yaml = build_snippet_yaml()
     snippet = CommentedMap([(key, value)])
     buffer = StringIO()
     snippet_yaml.dump(snippet, buffer)
     return [f"  {line}" for line in buffer.getvalue().splitlines()]
+
+
+def render_entry_block(fields: dict[str, Any]) -> list[str]:
+    snippet_yaml = build_snippet_yaml()
+    snippet = build_ordered_entry(fields)
+    buffer = StringIO()
+    snippet_yaml.dump(snippet, buffer)
+    lines = buffer.getvalue().splitlines()
+    if not lines:
+        return []
+    return [f"- {lines[0]}", *[f"  {line}" for line in lines[1:]]]
+
+
+def validate_new_entry_fields(fetched_fields: dict[str, Any]) -> None:
+    missing_keys = [
+        key
+        for key in ("type", "year", "authors", "title")
+        if key not in fetched_fields or not fetched_fields[key]
+    ]
+    if missing_keys:
+        joined_keys = ", ".join(missing_keys)
+        raise ValueError(f"metadata for new entry is missing required fields: {joined_keys}")
 
 
 def find_entry_end_insert_index(
@@ -377,6 +662,15 @@ def find_replace_end_index(
     return find_entry_end_insert_index(original_lines, entry.lc.line + 1, next_entry_start_line)
 
 
+def find_top_entry_insert_index(
+    publications: CommentedSeq, original_lines: list[str]
+) -> int:
+    for entry in publications:
+        if isinstance(entry, CommentedMap):
+            return entry.lc.line
+    return len(original_lines)
+
+
 def write_updated_text(
     yaml_path: Path,
     original_lines: list[str],
@@ -418,12 +712,22 @@ def main() -> int:
         "seen": 0,
         "eligible": 0,
         "updated": 0,
+        "prepended": 0,
         "unchanged": 0,
         "conflicts": 0,
         "errors": 0,
     }
     changed = False
     operations: list[tuple[int, int, int, list[str]]] = []
+    top_entry_insert_index = find_top_entry_insert_index(publications, original_lines)
+    doi_exists_anywhere = bool(
+        doi_filter
+        and any(
+            isinstance(entry, CommentedMap)
+            and normalize_doi(entry.get("doi")) == doi_filter
+            for entry in publications
+        )
+    )
     entry_start_lines = [
         entry.lc.line + 1 for entry in publications if isinstance(entry, CommentedMap)
     ]
@@ -452,13 +756,15 @@ def main() -> int:
         stats["eligible"] += 1
 
         try:
-            bibtex = fetch_bibtex(doi, timeout=args.timeout)
-            fetched_fields = parse_bibtex_entry(bibtex)
+            fetched_fields = fetch_metadata(doi, args.backend, args.timeout)
             if "doi" not in fetched_fields:
                 fetched_fields["doi"] = doi
         except (DOIError, ValueError, TypeError, requests.RequestException) as exc:
             print(
-                f"[ERROR] line {entry_line} doi={doi}: failed to fetch/parse metadata: {exc}",
+                (
+                    f"[ERROR] line {entry_line} doi={doi}: failed to fetch/parse metadata "
+                    f"with backend={args.backend}: {exc}"
+                ),
                 file=sys.stderr,
             )
             stats["errors"] += 1
@@ -524,19 +830,56 @@ def main() -> int:
         else:
             stats["unchanged"] += 1
 
+    if doi_filter and not doi_exists_anywhere:
+        stats["eligible"] += 1
+        try:
+            fetched_fields = fetch_metadata(doi_filter, args.backend, args.timeout)
+            if "doi" not in fetched_fields:
+                fetched_fields["doi"] = doi_filter
+            validate_new_entry_fields(fetched_fields)
+        except (DOIError, ValueError, TypeError, requests.RequestException) as exc:
+            print(
+                (
+                    f"[ERROR] doi={doi_filter}: failed to insert a new entry with "
+                    f"backend={args.backend}: {exc}"
+                ),
+                file=sys.stderr,
+            )
+            stats["errors"] += 1
+        else:
+            block_lines = render_entry_block(fetched_fields)
+            if (
+                original_lines
+                and top_entry_insert_index < len(original_lines)
+                and original_lines[top_entry_insert_index].strip()
+            ):
+                block_lines = [*block_lines, ""]
+            operations.append((top_entry_insert_index, top_entry_insert_index, -1, block_lines))
+            changed = True
+            stats["updated"] += 1
+            stats["prepended"] += 1
+            print(
+                (
+                    f"[PREPEND] doi={doi_filter}: inserted a new entry at the top "
+                    f"using backend={args.backend}."
+                ),
+                file=sys.stderr,
+            )
+
     if changed:
         write_updated_text(yaml_path, original_lines, operations)
 
     print(
         (
             f"Processed {stats['eligible']} DOI entries "
-            f"(updated={stats['updated']}, unchanged={stats['unchanged']}, "
+            f"(updated={stats['updated']}, prepended={stats['prepended']}, "
+            f"unchanged={stats['unchanged']}, "
             f"conflicts={stats['conflicts']}, errors={stats['errors']})."
         ),
         file=sys.stderr,
     )
 
-    if doi_filter and stats["eligible"] == 0:
+    if doi_filter and doi_exists_anywhere and stats["eligible"] == 0:
         print(
             (
                 f"[WARN] No DOI entry matched {doi_filter!r} within the requested line range "

@@ -1394,10 +1394,12 @@
   refId: iwabuchi-2025-rendering
   doi: 10.1145/3706599.3721160
   href: https://doi.org/10.1145/3706599.3721160
-  booktitle: Proceedings of the Extended Abstracts of the CHI Conference on Human Factors in Computing Systems
+  booktitle: Extended Abstracts of the CHI Conference on Human Factors in Computing Systems
   series: CHI EA ’25
   publisher: ACM
   pages: 1–4
+  address: New York, NY, USA
+  location: Yokohama Japan
 
 - type: inproceedings
   year: 2024

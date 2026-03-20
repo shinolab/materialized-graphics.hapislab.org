@@ -1157,15 +1157,21 @@ a {
 		background: #ffffff !important;
 		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
 		z-index: 1000 !important;
-		padding: 10px 0 !important;
+		padding: 5px 0 !important;
+	   	overflow-y: auto;
+		max-height: calc(100vh - 120px); /* 画面全体の高さからヘッダー分を引く */
+       	padding-bottom: 40px !important; /* 一番下の項目の下に余白を作り、隠れないようにする */
+    	-webkit-overflow-scrolling: touch; /* スマホでのスクロールを滑らかにする */
 	}
 
 	.site-nav__link {
-		display: block !important;
-		padding: 15px 20px !important;
-		border-bottom: 1px solid #f0f0f0 !important;
-		color: #333 !important;
-		text-decoration: none !important;
+    display: block !important;
+    padding: 8px 20px !important;    /* 上下を8pxに縮小 */
+    border-bottom: 1px solid #f0f0f0 !important;
+    color: #333 !important;
+    text-decoration: none !important;
+    line-height: 1.2 !important;     /* 行間をタイトに */
+    font-size: 1rem !important;      /* スマホで押しやすいサイズ */
 	}
 
 	.site-header--menu-open .custom-mobile-menu-btn span {

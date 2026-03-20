@@ -14,8 +14,8 @@ export const englishSiteMeta = {
 };
 
 export const englishPrimaryNav: NavItem[] = [
-	{ href: '/en/', label: 'Top Page' },
-	{ href: '/en/research-topics', label: 'Research Topics' },
+	{ href: '/en/', label: 'Top' },
+	{ href: '/en/research-topics', label: 'Topics' },
 	{ href: '/en/members', label: 'Members' },
 	{ href: '/en/awards', label: 'Awards' },
 	{ href: '/en/publications', label: 'Publications' },

@@ -16,11 +16,11 @@ export type SpecialPageMarkdownModule = {
 };
 
 export const specialPageMarkdownModules = import.meta.glob(
-	'../content/special-pages/*.{md,mdx}',
+	'../content/special-pages/**/*.{md,mdx}',
 ) as Record<string, () => Promise<SpecialPageMarkdownModule>>;
 
 export const specialPageHtmlModules = import.meta.glob(
-	'../content/special-pages/*.html',
+	'../content/special-pages/**/*.html',
 	{
 		query: '?raw',
 		import: 'default',
@@ -29,6 +29,7 @@ export const specialPageHtmlModules = import.meta.glob(
 
 export function getSpecialPageSlugs(locale: 'ja' | 'en'): string[] {
 	const entries = collectLocalizedContentSlugEntries(
+		'../content/special-pages/',
 		specialPageMarkdownModules,
 		specialPageHtmlModules,
 	);

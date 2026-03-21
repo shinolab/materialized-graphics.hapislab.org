@@ -12,8 +12,16 @@ export interface LocalizedContentSlugEntry {
 const DEFAULT_SUFFIXES = ['.mdx', '.md', '.html'] as const;
 const ENGLISH_SUFFIXES = ['.en.mdx', '.en.md', '.en.html'] as const;
 
-function getFileName(path: string): string {
-	return path.split('/').pop() ?? path;
+function getRelativeContentPath(
+	path: string,
+	relativePathPrefix: string,
+): string | undefined {
+	const prefixIndex = path.indexOf(relativePathPrefix);
+	if (prefixIndex === -1) {
+		return undefined;
+	}
+
+	return path.slice(prefixIndex + relativePathPrefix.length);
 }
 
 function stripSuffix(
@@ -29,16 +37,23 @@ function stripSuffix(
 }
 
 export function collectLocalizedContentSlugEntries(
+	relativePathPrefix: string,
 	...moduleGroups: Array<Record<string, unknown>>
 ): LocalizedContentSlugEntry[] {
 	const entries = new Map<string, LocalizedContentSlugEntry>();
 
 	for (const modules of moduleGroups) {
 		for (const path of Object.keys(modules)) {
-			const fileName = getFileName(path);
-			const englishSlug = stripSuffix(fileName, ENGLISH_SUFFIXES);
+			const relativePath = getRelativeContentPath(path, relativePathPrefix);
+			if (!relativePath) {
+				continue;
+			}
+
+			const englishSlug = stripSuffix(relativePath, ENGLISH_SUFFIXES);
 			const defaultSlug =
-				englishSlug === undefined ? stripSuffix(fileName, DEFAULT_SUFFIXES) : undefined;
+				englishSlug === undefined
+					? stripSuffix(relativePath, DEFAULT_SUFFIXES)
+					: undefined;
 			const slug = englishSlug ?? defaultSlug;
 
 			if (!slug) {
@@ -92,10 +107,19 @@ export function assertNoSpecialPageSlugConflicts(
 	}
 
 	for (const slug of slugs) {
+		const topLevelSegment = slug.split('/')[0] ?? slug;
+
 		if (reserved.has(slug)) {
 			throw new Error(
 				`Special page slug "${slug}" conflicts with an existing route. ` +
 					'Choose a different file name in src/content/special-pages/.',
+			);
+		}
+
+		if (slug.includes('/') && reserved.has(topLevelSegment)) {
+			throw new Error(
+				`Special page slug "${slug}" uses reserved top-level segment "${topLevelSegment}". ` +
+					'Choose a different top-level directory name in src/content/special-pages/.',
 			);
 		}
 	}

@@ -1,18 +1,25 @@
 ---
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
+import DetailPageRenderer from "../components/DetailPageRenderer.astro";
 import StaticPageRenderer from "../components/StaticPageRenderer.astro";
 import {
 	japaneseStaticPageEntries,
 	type StaticPageEntry,
 } from "../data/page-registry";
 import { loadLocalizedContent, type FrontmatterLike } from "../lib/content";
+import {
+	getSpecialPageSlugs,
+	loadSpecialPageContent,
+} from "../lib/special-page-content";
 
 type MarkdownModule = {
 	default: AstroComponentFactory;
 	frontmatter?: FrontmatterLike;
 };
 
-type RouteProps = { type: "static"; entry: StaticPageEntry };
+type RouteProps =
+	| { type: "static"; entry: StaticPageEntry }
+	| { type: "special"; slug: string };
 
 const pageModules = import.meta.glob("../content/pages/*.{md,mdx}") as Record<
 	string,
@@ -29,37 +36,73 @@ export function getStaticPaths() {
 			params: { slug: entry.slug },
 			props: { type: "static", entry },
 		})),
+		...getSpecialPageSlugs("ja").map((slug) => ({
+			params: { slug },
+			props: { type: "special", slug },
+		})),
 	];
 }
 
-const { type, entry } = Astro.props as RouteProps;
+const route = Astro.props as RouteProps;
 
 let ContentComponent;
 let frontmatter;
 let htmlContent = "";
-let sourceType: "markdown" | "html" = "markdown";
+let title;
+let description;
+let lead;
 
-if (type === "static" && entry.contentId) {
+if (route.type === "static" && route.entry.contentId) {
 	const content = await loadLocalizedContent({
 		locale: "ja",
-		basePath: `../content/pages/${entry.contentId}`,
+		basePath: `../content/pages/${route.entry.contentId}`,
 		markdownModules: pageModules,
 		htmlModules: pageHtmlModules,
 	});
 	ContentComponent = content.ContentComponent;
 	frontmatter = content.frontmatter;
 	htmlContent = content.htmlContent;
+
+	title = route.entry.title;
+	description = route.entry.description;
+	lead = route.entry.lead;
+} else if (route.type === "static") {
+	title = route.entry.title;
+	description = route.entry.description;
+	lead = route.entry.lead;
+} else {
+	const content = await loadSpecialPageContent("ja", route.slug);
+	ContentComponent = content.ContentComponent;
+	frontmatter = content.frontmatter;
+	htmlContent = content.htmlContent;
+	title = content.frontmatter?.title ?? route.slug;
+	description = content.frontmatter?.description;
+	lead = content.frontmatter?.lead;
 }
 ---
 
-<StaticPageRenderer
-	currentPath={entry.currentPath}
-	frontmatter={frontmatter}
-	ContentComponent={ContentComponent}
-	htmlContent={htmlContent}
-	title={entry.title}
-	description={entry.description}
-	lead={entry.lead}
-	introHtml={entry.introHtml}
-	kind={entry.kind}
-/>
+{
+	route.type === "static" ? (
+		<StaticPageRenderer
+			currentPath={route.entry.currentPath}
+			frontmatter={frontmatter}
+			ContentComponent={ContentComponent}
+			htmlContent={htmlContent}
+			title={title}
+			description={description}
+			lead={lead}
+			introHtml={route.entry.introHtml}
+			kind={route.entry.kind}
+		/>
+	) : (
+		<DetailPageRenderer
+			title={title}
+			description={description}
+			lead={lead}
+			currentPath={`/${route.slug}`}
+			ContentComponent={ContentComponent}
+			htmlContent={htmlContent}
+			languageSwitchHref={`/en/${route.slug}`}
+		/>
+	)
+}

@@ -2,13 +2,13 @@
 
 このガイドでは, 篠田・牧野研究室ホームページの各コンテンツを更新・追加する方法について詳しく説明します.
 
- ${\color{red} \text{重要: 変更を加える前に, 最新の main ブランチを取得し, 作業用のブランチで編集を行ってください.}}$
-
-```
-git switch main
-git pull origin main
-git switch -c <your-branch-name>
-```
+> [!CAUTION]
+> 変更を加える前に, 最新の main ブランチを取得し, 作業用のブランチで編集を行ってください.
+> ```
+> git switch main
+> git pull origin main
+> git switch -c <your-branch-name>
+> ```
 
 - Gitの操作に慣れていない場合は, GUIクライアントの使用を推奨します.
   - [VSCode](https://code.visualstudio.com/) + [GitGraph](https://marketplace.visualstudio.com/items?itemName=mhutchie.git-graph)

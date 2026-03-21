@@ -1064,6 +1064,10 @@ a {
 	transition: all 0.5s ease;
 }
 
+.custom-mobile-logo-img {
+    margin-top: -5px !important;
+}
+
 @media (max-width: 1024px) {
 	.site-header__inner {
 		display: flex !important;
@@ -1088,7 +1092,51 @@ a {
 		white-space: nowrap !important;
 	}
 
-		.site-nav {
+	.custom-mobile-menu-btn {
+		display: flex !important;
+		width: 38px !important;
+		height: 38px !important;
+		background: #00475a !important;
+		border-radius: 4px !important;
+		border: none !important;
+		position: relative !important;
+		justify-content: center !important;
+		align-items: center !important;
+		cursor: pointer !important;
+		z-index: 1001 !important;
+		flex-shrink: 0 !important;
+		margin-left: 10px !important;
+	}
+
+	.custom-mobile-menu-btn span {
+		display: block !important;
+		position: relative !important;
+		width: 24px !important;
+		height: 2px !important;
+		background: #ffffff !important;
+		transition: all 0.3s !important;
+	}
+
+	.custom-mobile-menu-btn span::before,
+	.custom-mobile-menu-btn span::after {
+		content: "" !important;
+		position: absolute !important;
+		left: 0 !important;
+		width: 24px !important;
+		height: 2px !important;
+		background: #ffffff !important;
+		transition: all 0.3s !important;
+	}
+
+	.custom-mobile-menu-btn span::before {
+		top: -8px !important;
+	}
+
+	.custom-mobile-menu-btn span::after {
+		top: 8px !important;
+	}
+
+	.site-nav {
 		display: none !important;
 	}
 
@@ -1196,21 +1244,28 @@ header [class*="logo"]:not(.custom-mobile-logo-img) {
 	display: block;
 }
 
-@media (max-width: 1024px) {
-	.site-footer__logo img {
-		height: 2.2rem;
-	}
-}
-
-
 .site-header__inner {
 	flex-direction: column !important;
-	align-items: flex-start !important;
+	align-items: center !important;
 	gap: 1.2rem !important;
 	padding-top: 1rem !important;
 	padding-bottom: 0.8rem !important;
 }
 
+@media (max-width: 1024px) {
+	.site-footer__logo img {
+		height: 2.2rem;
+	}
+	.site-header__inner {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+
+        padding-top: 0.8rem !important;   
+        padding-bottom: 0.6rem !important; 
+        min-height: 70px !important;       
+    }
+}
 
 .site-brand {
 	display: flex !important;
@@ -1299,48 +1354,4 @@ header [class*="logo"]:not(.custom-mobile-logo-img) {
     }
 }
 
-.custom-mobile-menu-btn {
-        display: flex !important;
-        width: 38px !important;    /* 46pxから38pxへ縮小 */
-        height: 38px !important;   /* 46pxから38pxへ縮小 */
-        background: #00475a !important;
-        border-radius: 4px !important;
-        border: none !important;
-        position: relative !important;
-        justify-content: center !important;
-        align-items: center !important;
-        cursor: pointer !important;
-        z-index: 1001 !important;
-        flex-shrink: 0 !important;
-        margin-left: 10px !important;
-    }
-
-    /* 中の三本線（サイズ縮小版） */
-    .custom-mobile-menu-btn span {
-        display: block !important;
-        position: relative !important;
-        width: 18px !important;    /* 24pxから18pxへ短縮 */
-        height: 2px !important;
-        background: #ffffff !important;
-        transition: all 0.3s !important;
-    }
-
-    .custom-mobile-menu-btn span::before,
-    .custom-mobile-menu-btn span::after {
-        content: "" !important;
-        position: absolute !important;
-        left: 0 !important;
-        width: 18px !important;    /* 線と同じ幅に */
-        height: 2px !important;
-        background: #ffffff !important;
-        transition: all 0.3s !important;
-    }
-
-    /* 線の間隔をギュッと寄せる */
-    .custom-mobile-menu-btn span::before {
-        top: -6px !important;      /* -8pxから-6pxへ */
-    }
-
-    .custom-mobile-menu-btn span::after {
-        top: 6px !important;       /* 8pxから6pxへ */
-    }
+}

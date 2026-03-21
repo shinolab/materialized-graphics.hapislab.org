@@ -438,7 +438,9 @@ const descriptionParagraphs = copy.description
 		min-width: 200px;
 		display: block;
 		will-change: transform;
-		transition: transform 0.3s ease;
+		transition:
+			transform 0.3s ease,
+			box-shadow 0.3s ease;
 	}
 
 	.home-topic-carousel__item:hover {
@@ -449,6 +451,9 @@ const descriptionParagraphs = copy.description
 		display: block;
 		color: inherit;
 		text-decoration: none;
+		transition:
+			color 0.3s ease,
+			filter 0.3s ease;
 	}
 
 	.home-topic-carousel__image {
@@ -461,7 +466,9 @@ const descriptionParagraphs = copy.description
 		border: 0;
 		background-color: #edf3f4;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-		transition: filter 0.3s ease;
+		transition:
+			transform 0.3s ease,
+			filter 0.3s ease;
 	}
 
 	.home-topic-carousel__title {
@@ -473,6 +480,19 @@ const descriptionParagraphs = copy.description
 	}
 
 	.home-topic-carousel__link:hover .home-topic-carousel__title {
+		color: var(--accent);
+	}
+
+	.home-topic-carousel__link:hover .home-topic-carousel__image {
+		filter: saturate(1.05);
+	}
+
+	.home-topic-carousel__link:active .home-topic-carousel__image {
+		transform: scale(0.98);
+		filter: brightness(0.9);
+	}
+
+	.home-topic-carousel__link:active .home-topic-carousel__title {
 		color: var(--accent);
 	}
 
@@ -695,6 +715,36 @@ const descriptionParagraphs = copy.description
 			linear-gradient(160deg, #cfd9dc 0%, #a5b8be 100%);
 		overflow: hidden;
 		display: flex;
+	}
+
+	.news-card__visual.visual-theme-1 {
+		background:
+			linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 45%),
+			linear-gradient(160deg, #d7e4e8 0%, #a8c1c8 100%);
+	}
+
+	.news-card__visual.visual-theme-2 {
+		background:
+			linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 45%),
+			linear-gradient(160deg, #dfe6d7 0%, #b7c6a5 100%);
+	}
+
+	.news-card__visual.visual-theme-3 {
+		background:
+			linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 45%),
+			linear-gradient(160deg, #e5dfe8 0%, #c3b0cf 100%);
+	}
+
+	.news-card__visual.visual-theme-4 {
+		background:
+			linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 45%),
+			linear-gradient(160deg, #e8e1d8 0%, #d0b598 100%);
+	}
+
+	.news-card__visual.visual-theme-5 {
+		background:
+			linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 45%),
+			linear-gradient(160deg, #d8e4e8 0%, #a3bcc4 100%);
 	}
 
 	.news-card__link {

@@ -28,6 +28,7 @@ export const memberDetailHtmlModules = import.meta.glob(
 
 export function getMemberDetailSlugs(locale: 'ja' | 'en'): string[] {
 	const entries = collectLocalizedContentSlugEntries(
+		'../content/members/',
 		memberDetailMarkdownModules,
 		memberDetailHtmlModules,
 	);

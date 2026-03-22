@@ -43,9 +43,9 @@ const relatedTopics = allTopics
 	.slice(0, 8);
 const articleTitle = content.frontmatter?.title ?? topic.title;
 const articleDescription = content.frontmatter?.description ?? topic.summary;
-const sharePath = withBasePath(
-	topic.detailPath ?? `/research-topics/${topic.slug}`,
-) ?? `/research-topics/${topic.slug}`;
+const sharePath =
+	withBasePath(topic.detailPath ?? `/research-topics/${topic.slug}`) ??
+	`/research-topics/${topic.slug}`;
 const shareUrl = new URL(
 	sharePath,
 	Astro.site ?? new URL("https://hapislab.org"),
@@ -63,5 +63,4 @@ const shareUrl = new URL(
 	previousTopic={previousTopic}
 	nextTopic={nextTopic}
 	relatedTopics={relatedTopics}
-	shareUrl={shareUrl}
 />

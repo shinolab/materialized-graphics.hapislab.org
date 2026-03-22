@@ -54,9 +54,15 @@ export function collectLocalizedContentSlugEntries(
 				englishSlug === undefined
 					? stripSuffix(relativePath, DEFAULT_SUFFIXES)
 					: undefined;
-			const slug = englishSlug ?? defaultSlug;
+			let slug = englishSlug ?? defaultSlug;
 
-			if (!slug) {
+			if (slug === 'index') {
+				slug = '';
+			} else if (slug?.endsWith('/index')) {
+				slug = slug.slice(0, -'/index'.length);
+			}
+
+			if (slug === undefined) {
 				continue;
 			}
 

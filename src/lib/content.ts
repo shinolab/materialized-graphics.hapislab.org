@@ -51,12 +51,19 @@ export async function loadLocalizedContent({
 	htmlModules = {},
 }: LoadLocalizedContentOptions): Promise<LocalizedContentResult> {
 	const markdownCandidates = (suffixes: readonly string[], resolvedLocale: 'ja' | 'en') =>
-		suffixes.map(
-			(suffix): LocalizedContentCandidate => ({
-				path: `${basePath}${suffix}`,
-				sourceType: 'markdown',
-				resolvedLocale,
-			}),
+		suffixes.flatMap(
+			(suffix): LocalizedContentCandidate[] => [
+				{
+					path: `${basePath}${suffix}`,
+					sourceType: 'markdown',
+					resolvedLocale,
+				},
+				{
+					path: `${basePath}/index${suffix}`,
+					sourceType: 'markdown',
+					resolvedLocale,
+				},
+			],
 		);
 
 	const candidates: LocalizedContentCandidate[] =
@@ -64,12 +71,15 @@ export async function loadLocalizedContent({
 			? [
 					...markdownCandidates(ENGLISH_MARKDOWN_SUFFIXES, 'en'),
 					{ path: `${basePath}.en.html`, sourceType: 'html' as const, resolvedLocale: 'en' as const },
+					{ path: `${basePath}/index.en.html`, sourceType: 'html' as const, resolvedLocale: 'en' as const },
 					...markdownCandidates(DEFAULT_MARKDOWN_SUFFIXES, 'ja'),
 					{ path: `${basePath}.html`, sourceType: 'html' as const, resolvedLocale: 'ja' as const },
+					{ path: `${basePath}/index.html`, sourceType: 'html' as const, resolvedLocale: 'ja' as const },
 				]
 			: [
 					...markdownCandidates(DEFAULT_MARKDOWN_SUFFIXES, 'ja'),
 					{ path: `${basePath}.html`, sourceType: 'html' as const, resolvedLocale: 'ja' as const },
+					{ path: `${basePath}/index.html`, sourceType: 'html' as const, resolvedLocale: 'ja' as const },
 				];
 
 	for (const candidate of candidates) {

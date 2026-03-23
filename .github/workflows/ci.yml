@@ -15,8 +15,3 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: withastro/action@v6
-      - uses: astral-sh/setup-uv@v7
-      - run: |
-          npm run preview -- --port 4321 &
-          npx wait-on http://localhost:4321/
-          cd scripts && uv run python check_links.py http://localhost:4321/

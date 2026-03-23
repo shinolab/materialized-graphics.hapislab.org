@@ -1,8 +1,6 @@
 # 篠田・牧野研究室 ホームページ管理マニュアル
 
-このリポジトリは, [篠田・牧野研究室](https://hapislab.org/) の公式ウェブサイトのソースコードを管理しています.
-
-👉 [**コンテンツ更新ガイド (docs/edit-guide.md)**](./docs/edit-guide.md)
+このリポジトリは, [JST CREST 実体化映像プロジェクト](https://materialized-graphics.hapislab.org/) の公式ウェブサイトのソースコードを管理しています.
 
 ---
 
@@ -13,8 +11,8 @@
 1. **事前準備**: [Node.js](https://nodejs.org/) (v22以上推奨) をインストール.
 2. **クローンとセットアップ**:
     ```sh
-    git clone https://github.com/shinolab/hapislab-org-homepage.git
-    cd hapislab-org-homepage
+    git clone https://github.com/shinolab/materialized-graphics.hapislab.org.git
+    cd materialized-graphics.hapislab.org
     npm install
     ```
 3. **開発サーバーの起動**:

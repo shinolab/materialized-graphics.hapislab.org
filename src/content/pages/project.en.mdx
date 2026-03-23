@@ -1,0 +1,52 @@
+---
+title: Project Results
+description: Project overview and results for Materialized Graphics
+---
+
+import { Image } from "astro:assets";
+import SideBySide from "../../components/SideBySide.astro";
+
+import springer_book from "../../assets/springer_book.png";
+
+The haptic feedback using airborne ultrasound began around 2008 (See [the special page of midair haptics](https://hapislab.org/en/airborne-ultrasound-tactile-display)). While the radiation pressure of ultrasound is relatively small, changing its intensity at about 100 Hz can allow people to perceive tactile sensations. However, the sensations that arise are limited to a specific vibration sensation, and it was difficult to reproduce a wide range of tactile sensations. For example, the sense of constant force felt when gripping an object, namely the pressure sensation, is a major element of tactile sensation. However, its percptual threshold is higher than that of the vibration component, and it could not be felt with practical ultrasonic radiation pressure.
+
+However, [the research by Morisaki et al.](https://ieeexplore.ieee.org/document/9606531) in this project revealed that such pressure sensations can also be reproduced if the spatiotemporal pattern on the skin is properly controlled. This discovery demonstrated for the first time that various tactile sensations on the surface of objects can be reproduced using ultrasound.
+
+Reproducing the feeling of grasping a VR object while sensing the movement of the human finger has been one of the interests in airborne haptics from an early stage. However, because the stimulus was weak and the tactile sensation was limited to a specific vibration sensation, it was not possible to feel the physical entity of the VR object. In this project, the [haptic rendering algorithm by Matsubayashi et al.](https://dl.acm.org/doi/10.1145/3290605.3300317) demonstrated for the first time that it is possible to feel the sense of reality of VR objects. They also established a technology that allows them to present a sense of touch to a wide area of the palm, not just the fingertips, and reproduce the feeling of shaking hands with weak force accompanied by aerial images.
+
+These basic researches are conducted using a device surrounded by a large number of phased arrays. Using such a multi-phased array, the skin can be stimulated stably regardless of shielding or contact angle. These development environments are managed by Shun Suzuki and released as [open source on GitHub](https://github.com/shinolab/autd3).
+
+The other major component of materialzied graphics is the technology for reproducing three-dimensional images. In this project, the group led by Hideki Kakeya at the University of Tsukuba is responsible for the technology for stereoscopic images visible to the naked eye and is promoting its development. They have developed a technology that enables high-resolution and natural stereoscopic reproduction without vergence-accommodation conflicts, which is already being used in experimental verifications of this project. They have also succeeded in developing a stereoscopic display that allows simultaneous viewing from multiple viewpoints.
+
+The third element that constitutes to materialized graphics is AI, which generates sensory information displayed to the users, while the core technology is machine learning. This part is being developed by the group led by Masashi Sugiyama at the University of Tokyo. Machine learning is not only used to generate the movements and sensory stimulation of materialized graphics but also for the sensing and the evaluation of human perception. We have already proposed a specific algorithm to estimate the overall haptic-perception space from mixed users’ responses that include both certain and ambiguous answers. We have also proposed a design tool that translates the designer’s haptic image into physical tactile stimulations.
+
+### Textbook
+
+<SideBySide reverse="true">
+  <Image width="150" slot="media" src={springer_book} alt="springer_book" />
+  <div>
+    ＊Parts of the results of this project are summarized in the recently released book on Midair haptics.<br/>
+    [Ultrasound Mid-Air Haptics for Touchless Interfaces](https://link.springer.com/book/10.1007/978-3-031-04043-6)
+  </div>
+</SideBySide>
+
+### A review paper on Materialized graphics
+
+[Hiroyuki Shinoda, “Creation of Realistic Haptic Experiences for Materialized Graphics,” AsiaHaptics 2022, Nov. 12-14, Beijing, 2022.](https://drive.google.com/file/d/19sedwvh-sm_QXy6PfLu9_OxF7Pjj0EG4/view?usp=share_link)
+
+### Awards
+
+Best Demo Award 3rd place, Eurohaptics 2022<br/>
+Zen Somei, Tao Morisaki, Yutaro Toide, Masahio Fujiwara, Yasutoshi Makino, Hiroyuki Shinoda
+
+Best Paper Award, 2022 IEEE Transactions on Haptics<br/>
+Mitsuru Nakajima, Keisuke Hasegawa, Yasutoshi Makino, and Hiroyuki Shinoda
+
+Best Student Demonstration Award, SIGGRAPH ASIA 2021 Emerging Technologies<br/>
+Tao Morisaki, Masahiro Fujiwara, Yasutoshi Makino, Hiroyuki Shinoda
+
+Best Technical Paper Award, IEEE World Haptics Conference 2021<br/>
+Masahiro Fujiwara, Yu Someya, Yasutoshi Makino, and Hiroyuki Shinoda
+
+Finalist (Top3), Best Paper Award, Eurohaptics 2020<br/>
+Atsushi Matsubayashi, Yasutoshi Makino, Hiroyuki Shinoda

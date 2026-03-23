@@ -12,9 +12,13 @@ export interface TopicSummary {
 export interface SiteMeta {
 	japaneseName: string;
 	englishName: string;
+	topbarJa: string;
+	topbarEn: string;
 }
 
 export const siteMeta: SiteMeta = {
-	japaneseName: '篠田・牧野研究室',
-	englishName: 'Shinoda & Makino Lab',
+	japaneseName: 'Materialized Graphics Project',
+	englishName: 'Materialized Graphics Project',
+	topbarJa: 'JST CREST Symbiotic Interaction',
+	topbarEn: 'JST CREST Symbiotic Interaction',
 };

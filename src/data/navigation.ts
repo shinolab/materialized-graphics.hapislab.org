@@ -5,22 +5,14 @@ export interface NavItem {
 
 const primaryNavByLocale = {
     ja: [
-        { href: '/', label: 'トップページ' },
-        { href: '/research-topics', label: '研究テーマ' },
-        { href: '/members', label: 'メンバー' },
-        { href: '/awards', label: '受賞' },
-        { href: '/publications', label: '発表論文' },
-        { href: '/access', label: 'アクセス' },
-        { href: '/links', label: 'リンク' },
+        { href: '/', label: '実体化映像による多次元インタラクション' },
+        { href: '/プロジェクト', label: 'これまでの成果' },
+        { href: '/メンバー', label: 'メンバー' },
     ],
     en: [
-        { href: '/en/', label: 'Top' },
-        { href: '/en/research-topics', label: 'Topics' },
+        { href: '/en/', label: 'Materialized Graphics Project' },
+        { href: '/en/project-results', label: 'Project Results' },
         { href: '/en/members', label: 'Members' },
-        { href: '/en/awards', label: 'Awards' },
-        { href: '/en/publications', label: 'Publications' },
-        { href: '/en/access', label: 'Access' },
-        { href: '/en/links', label: 'Links' },
     ],
 } satisfies Record<'ja' | 'en', NavItem[]>;
 

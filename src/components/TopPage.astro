@@ -1,952 +1,191 @@
 ---
+import Layout from "../layouts/Layout.astro";
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import { Image } from "astro:assets";
-import Layout from "../layouts/Layout.astro";
-import { getHomePageContent } from "../data/home";
-import { resolveAssetObject } from "../lib/public-assets";
-import { withBasePath } from "../lib/urls";
-import {
-	getHomeResearchTopics,
-	getResearchTopics,
-} from "../lib/research-topics";
-import type { ResearchTopicListItem } from "../lib/research-topics";
+import finger4 from "../assets/finger4.jpg";
 
 interface Props {
 	locale?: "ja" | "en";
+	ContentComponent?: AstroComponentFactory;
+	frontmatter?: any;
 }
 
-interface HomeProject {
-	title: string;
-	href: string;
-	description?: string;
-	image?: string;
-	imageAlt?: string;
-}
-
-interface NewsFrontmatter {
-	date?: string;
-	expireDate?: string;
-}
-
-interface NewsModule {
-	Content?: AstroComponentFactory;
-	default?: AstroComponentFactory;
-	frontmatter?: NewsFrontmatter;
-}
-
-const { locale = "ja" } = Astro.props;
+const { locale = "ja", ContentComponent, frontmatter } = Astro.props;
 
 const isEnglish = locale === "en";
-const copy = getHomePageContent(locale);
-const currentPath = isEnglish ? "/en/" : "/";
-const latestTopics = getResearchTopics(locale).slice(0, 3);
 
-const newsModules = import.meta.glob<NewsModule>(
-	"../content/top/news/*.{md,mdx}",
-	{
-		eager: true,
-	},
-);
-
-function isEnglishNewsModule(path: string): boolean {
-	return /\.en\.mdx?$/.test(path);
-}
-
-const newsItemsRaw = Object.entries(newsModules)
-	.filter(([path]) =>
-		isEnglish ? isEnglishNewsModule(path) : !isEnglishNewsModule(path),
-	)
-	.map(([, moduleValue]) => ({
-		Content: moduleValue.Content ?? moduleValue.default,
-		frontmatter: moduleValue.frontmatter ?? {},
-	}))
-	.filter(
-		(
-			item,
-		): item is {
-			Content: AstroComponentFactory;
-			frontmatter: NewsFrontmatter;
-		} => Boolean(item.Content),
-	);
-
-const today = new Date().toISOString().split("T")[0];
-
-const visibleNewsItems = newsItemsRaw
-	.filter(({ frontmatter }) => {
-		if (!frontmatter.expireDate) return true;
-		return frontmatter.expireDate >= today;
-	})
-	.sort((a, b) =>
-		(b.frontmatter.date || "").localeCompare(a.frontmatter.date || ""),
-	)
-	.slice(0, 5);
-
-const homeContentModules = import.meta.glob<HomeProject[]>(
-	"../content/top/*.json",
-	{
-		import: "default",
-	},
-);
-
-const projectsPath = isEnglish
-	? "../content/top/projects.en.json"
-	: "../content/top/projects.json";
-const projectsLoader = homeContentModules[projectsPath];
-const projectItems = projectsLoader ? ((await projectsLoader()) ?? []) : [];
-const visibleProjectItems = projectItems.filter(
-	(project) =>
-		project.title.trim().length > 0 && project.href.trim().length > 0,
-);
-
-const getTopicHref = (topic: ResearchTopicListItem) =>
-	isEnglish ? topic.detailPathEn || topic.detailPath : topic.detailPath;
-
-const topicCarouselEntries = getHomeResearchTopics(locale)
-	.filter((item) => {
-		const href = getTopicHref(item);
-		return (
-			item.title.trim().length > 0 &&
-			typeof href === "string" &&
-			href.length > 0
-		);
-	})
-	.map((item) => ({
-		item,
-		imageSrc: item.image,
-		href: getTopicHref(item) ?? "#",
-	}));
-
-const projectEntries = visibleProjectItems.map((project) => ({
-	project,
-	imageSrc: project.image ? resolveAssetObject(project.image) : undefined,
-}));
-
-const descriptionParagraphs = copy.description
-	.split(/\n\s*\n/)
-	.map((paragraph) => paragraph.replace(/\s*\n\s*/g, " ").trim())
-	.filter(Boolean);
+const title =
+	frontmatter?.title ??
+	(isEnglish
+		? "Materialized Graphics Project"
+		: "実体化映像による多次元インタラクション");
+const description =
+	frontmatter?.description ?? "JST CREST Materialized Graphics Project";
 ---
 
 <Layout
-	title={copy.tabTitle}
-	description={copy.description}
-	currentPath={currentPath}
+	title={title}
+	description={description}
+	currentPath={isEnglish ? "/en/" : "/"}
 	locale={locale}
+	languageSwitchHref={isEnglish ? "/" : "/en/"}
 >
-	{
-		topicCarouselEntries.length > 0 && (
-			<section
-				class="home-page-container home-topic-carousel home-topic-carousel-section"
-				data-topic-carousel
-				role="region"
-				aria-label={copy.carouselLabel}
-			>
-				<div
-					class="home-topic-carousel__viewport"
-					data-carousel-viewport
-				>
-					<button
-						class="carousel-nav carousel-nav--prev"
-						id="carousel-prev"
-						aria-label={copy.carouselPreviousLabel}
-					>
-						<span class="carousel-nav__icon">‹</span>
-					</button>
+	<section class="top-hero">
+		<div class="top-hero__media">
+			<Image
+				src={finger4}
+				alt="Finger touching a materialized graphic"
+				loading="eager"
+			/>
+		</div>
+		<div class="container top-hero__body">
+			<h1>Materialized Graphics</h1>
+			<p class="top-hero__tagline">Graphics with a Physical Entity</p>
+		</div>
+	</section>
 
-					<div class="home-topic-carousel__track" data-carousel-track>
-						{topicCarouselEntries.map(
-							({ item, imageSrc, href }, index) => (
-								<article class="home-topic-carousel__item">
-									<a
-										class="home-topic-carousel__link"
-										href={withBasePath(href)}
-										draggable="false"
-									>
-										<Image
-											src={imageSrc}
-											alt={item.imageAlt ?? item.title}
-											class="home-topic-carousel__image"
-											draggable="false"
-											width={200}
-											height={150}
-											loading={
-												index < 3 ? "eager" : "lazy"
-											}
-										/>
-										<h3 class="home-topic-carousel__title">
-											{item.title}
-										</h3>
-									</a>
-								</article>
-							),
-						)}
-						{topicCarouselEntries.map(
-							({ item, imageSrc, href }) => (
-								<article
-									class="home-topic-carousel__item"
-									aria-hidden="true"
-								>
-									<a
-										class="home-topic-carousel__link"
-										href={withBasePath(href)}
-										draggable="false"
-										tabindex="-1"
-									>
-										<Image
-											src={imageSrc}
-											alt={item.imageAlt ?? item.title}
-											class="home-topic-carousel__image"
-											draggable="false"
-											width={200}
-											height={150}
-											loading="lazy"
-										/>
-										<h3 class="home-topic-carousel__title">
-											{item.title}
-										</h3>
-									</a>
-								</article>
-							),
-						)}
-					</div>
-
-					<button
-						class="carousel-nav carousel-nav--next"
-						id="carousel-next"
-						aria-label={copy.carouselNextLabel}
-					>
-						<span class="carousel-nav__icon">›</span>
-					</button>
-				</div>
-			</section>
-		)
-	}
-
-	<div class="home-page-container">
-		<section class="content-section home-section">
-			<div class="section-heading section-heading--legacy page-hero">
-				<h1>{copy.overviewHeading}</h1>
-			</div>
-
-			<div class="home-section__content">
-				<div class="home-intro">
-					<div class="home-intro__branding">
-						<div class="home-overview__body">
-							{copy.heroSubtitle && <h4>{copy.heroSubtitle}</h4>}
-							<h3>{copy.heroTitle}</h3>
-						</div>
-					</div>
-
-					<div class="home-overview__description">
-						{
-							descriptionParagraphs.map((paragraph) => (
-								<p>{paragraph}</p>
-							))
-						}
-					</div>
-				</div>
-
-				<div>
-					<div
-						class="section-heading home-affiliations-block__heading"
-					>
-						<h4>{copy.affiliationsHeading}</h4>
-					</div>
-
-					<ul class="legacy-bullet-list">
-						{
-							copy.affiliations.map((affiliation) => (
-								<li>{affiliation}</li>
-							))
-						}
-					</ul>
-				</div>
-			</div>
-		</section>
-
-		{
-			projectEntries.length > 0 && (
-				<section class="content-section home-section">
-					<div class="section-heading section-heading--legacy page-hero">
-						<h1>{copy.projectsHeading}</h1>
-					</div>
-
-					<div class="home-section__content">
-						<div class="home-projects-list">
-							{projectEntries.map(({ project, imageSrc }) => (
-								<article class="surface home-project-card">
-									<a
-										class="home-project-card__link"
-										href={withBasePath(project.href)}
-									>
-										{imageSrc ? (
-											<Image
-												src={imageSrc}
-												alt={
-													project.imageAlt ??
-													project.title
-												}
-												class="home-project-card__image"
-												width={400}
-												height={225}
-											/>
-										) : (
-											<div
-												class="home-project-card__image home-project-card__image--placeholder"
-												aria-hidden="true"
-											/>
-										)}
-										<div class="home-project-card__body">
-											<h3>{project.title}</h3>
-											{project.description && (
-												<p>{project.description}</p>
-											)}
-										</div>
-									</a>
-								</article>
-							))}
-						</div>
-					</div>
-				</section>
-			)
-		}
-
-		{
-			visibleNewsItems.length > 0 && (
-				<section class="content-section home-section">
-					<div class="section-heading section-heading--legacy page-hero">
-						<h1>{copy.newsHeading}</h1>
-					</div>
-
-					<div class="home-section__content">
-						<div class="home-news-list">
-							{visibleNewsItems.map(
-								({ Content, frontmatter }) => (
-									<article class="surface home-news-card">
-										<div class="home-news-card__date">
-											{frontmatter.date && (
-												<time
-													datetime={frontmatter.date}
-												>
-													{copy.formatDate(
-														frontmatter.date,
-													)}
-												</time>
-											)}
-										</div>
-										<div class="home-news-card__content">
-											<Content />
-										</div>
-									</article>
-								),
-							)}
-						</div>
-					</div>
-				</section>
-			)
-		}
-
-		<section class="content-section home-section home-latest">
-			<div class="section-heading section-heading--legacy page-hero">
-				<h1>{copy.latestHeading}</h1>
-			</div>
-
-			<div class="home-section__content">
-				<div class="home-news__grid">
-					{
-						latestTopics.map((topic, index) => (
-							<article class="news-card">
-								<a
-									class="news-card__link"
-									href={withBasePath(getTopicHref(topic))}
-								>
-									<div
-										class:list={[
-											"news-card__visual",
-											`visual-theme-${((index + 1) % 5) + 1}`,
-										]}
-									>
-										{topic.image && (
-											<Image
-												src={topic.image}
-												alt={
-													topic.imageAlt ??
-													topic.title
-												}
-												class="news-card__image"
-												width={400}
-												height={300}
-											/>
-										)}
-									</div>
-									<h3>{topic.title}</h3>
-									<p class="news-card__date">
-										◷ {copy.formatDate(topic.date)}
-									</p>
-								</a>
-							</article>
-						))
-					}
-				</div>
-			</div>
-		</section>
-	</div>
+	<main class="container top-page">
+		<div class="surface prose top-page__content">
+			{ContentComponent && <ContentComponent />}
+		</div>
+	</main>
 </Layout>
 
 <style>
-	.home-page-container {
-		width: min(980px, calc(100% - 2rem));
-		margin-left: auto;
-		margin-right: auto;
-		padding-left: 1.5rem;
-		padding-right: 1.5rem;
-	}
-
-	.home-page-container .section-heading--legacy {
-		padding-left: 0;
-		padding-right: 0;
-	}
-
-	.home-section__content {
-		padding-left: 0;
-		padding-right: 0;
-	}
-
-	.home-topic-carousel-section {
-		margin-top: 1rem;
+	.top-hero {
 		position: relative;
-	}
-
-	.home-topic-carousel__viewport {
-		overflow: hidden;
-		width: 100%;
-		display: block;
-	}
-
-	.home-topic-carousel__track {
-		display: flex;
-		flex-wrap: nowrap;
-		width: max-content;
-		gap: 1.25rem;
-		margin: 0;
-		padding: 0;
-	}
-
-	.home-topic-carousel__item {
-		flex: 0 0 200px;
-		width: 200px;
-		min-width: 200px;
-		display: block;
-		will-change: transform;
-		transition:
-			transform 0.3s ease,
-			box-shadow 0.3s ease;
-	}
-
-	.home-topic-carousel__item:hover {
-		transform: translateY(-5px);
-	}
-
-	.home-topic-carousel__link {
-		display: block;
-		color: inherit;
-		text-decoration: none;
-		transition:
-			color 0.3s ease,
-			filter 0.3s ease;
-	}
-
-	.home-topic-carousel__image {
-		width: 100%;
-		height: 150px;
-		aspect-ratio: 4 / 3;
-		object-fit: cover;
-		object-position: center;
-		display: block;
-		border: 0;
-		background-color: #edf3f4;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-		transition:
-			transform 0.3s ease,
-			filter 0.3s ease;
-	}
-
-	.home-topic-carousel__title {
-		margin: 0.45rem 0 0;
-		font-size: 0.9rem;
-		line-height: 1.25;
-		font-weight: 500;
-		color: #333;
-	}
-
-	.home-topic-carousel__link:hover .home-topic-carousel__title {
-		color: var(--accent);
-	}
-
-	.home-topic-carousel__link:hover .home-topic-carousel__image {
-		filter: saturate(1.05);
-	}
-
-	.home-topic-carousel__link:active .home-topic-carousel__image {
-		transform: scale(0.98);
-		filter: brightness(0.9);
-	}
-
-	.home-topic-carousel__link:active .home-topic-carousel__title {
-		color: var(--accent);
-	}
-
-	.carousel-nav {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		width: 3rem;
-		height: 3rem;
-		padding-bottom: 0.3rem;
-		border: 1px solid var(--border);
-		background: rgba(255, 255, 255, 0.8);
-		color: var(--primary);
-		font-size: 2rem;
+		height: 35vh;
+		min-height: 150px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		cursor: pointer;
-		z-index: 10;
-		opacity: 0;
-		transition:
-			opacity 0.3s ease,
-			background 0.3s ease;
-		user-select: none;
+		color: #fff;
+		text-align: center;
+		overflow: hidden;
+		background-color: #000;
 	}
 
-	.home-topic-carousel__viewport:hover .carousel-nav {
-		opacity: 1;
+	.top-hero__media {
+		position: absolute;
+		inset: 0;
+		opacity: 0.7;
 	}
 
-	.carousel-nav:hover {
-		background: #fff;
+	.top-hero__media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
 	}
 
-	.carousel-nav--prev {
-		left: 0;
+	.top-hero__body {
+		position: relative;
+		z-index: 1;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 	}
 
-	.carousel-nav--next {
-		right: 0;
-	}
-
-	[data-carousel-track].is-jumping {
-		transition: transform 0.4s ease-out;
-	}
-
-	.home-section > .section-heading--legacy,
-	.home-affiliations-block__heading.section-heading--legacy {
-		border-bottom: 0;
-		padding-bottom: 0;
-	}
-
-	.home-intro {
-		display: grid;
-		gap: 1.5rem;
-	}
-
-	.home-intro__branding {
-		display: grid;
-		grid-template-columns: auto 1fr;
-		gap: 1rem;
-		align-items: center;
-	}
-
-	.home-overview__body h3 {
+	.top-hero h1 {
 		margin: 0;
-		font-size: clamp(1.8rem, 3vw, 2.8rem);
-		line-height: 1.2;
+		font-size: clamp(1.2rem, 4vw, 2.5rem);
+		line-height: 1.1;
+		font-weight: 800;
+		color: #ffffff;
 	}
 
-	.home-overview__body h4 {
-		margin: 0;
-		font-size: clamp(1.2rem, 2vw, 1.86rem);
-		line-height: 1.2;
-	}
-
-	.home-overview__description {
-		display: grid;
-		gap: 0.5rem;
-		text-align: justify;
-		text-justify: inter-ideograph;
-	}
-
-	.home-overview__description p {
-		margin: 0;
-	}
-
-	.home-affiliations-block__heading {
-		margin-top: 1rem;
-		margin-bottom: 0;
-	}
-
-	.home-affiliations-block__heading h4 {
-		margin: 0;
-		font-size: 1.2rem;
-	}
-
-	.legacy-bullet-list {
-		margin: 0;
-		padding-left: 1.25rem;
-	}
-
-	.home-news-list {
-		display: grid;
-		gap: 1rem;
-	}
-
-	.home-news-card {
-		padding: 1.1rem 1.4rem;
-		background: var(--primary-soft);
-		border-left: 4px solid var(--accent);
-		display: flex;
-		gap: 1.5rem;
-		align-items: baseline;
-	}
-
-	.home-news-card__date {
-		font-weight: 700;
-		color: var(--accent);
-		flex-shrink: 0;
-		font-family: var(--font-mono, monospace);
-	}
-
-	.home-news-card__content {
-		flex-grow: 1;
+	.top-hero__tagline {
+		margin: 0.5rem 0 0;
+		font-size: clamp(0.6rem, 1.5vw, 1.1rem);
 		font-weight: 600;
-		color: var(--primary);
 	}
 
-	.home-news-card__content p {
-		margin: 0;
+	.top-page {
+		padding-top: 3rem;
+		padding-bottom: 4rem;
 	}
 
-	.home-news-card__content a {
-		color: var(--accent);
-		text-decoration: underline;
+	.top-page__content {
+		padding: 2.5rem;
+		max-width: none;
+		box-shadow: none;
+		border: none;
 	}
 
-	.home-projects-list {
+	/* MDX content styles */
+	:global(.prose img) {
+		border: none !important;
+		box-shadow: none !important;
+	}
+
+	:global(.pillar-grid) {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-		gap: 1.5rem;
-		margin: 2rem 0;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 2rem;
+		margin: 3rem 0;
 	}
 
-	.home-project-card {
-		background: var(--surface-muted);
-		transition:
-			transform 0.3s ease,
-			box-shadow 0.3s ease;
+	:global(.pillar-item) {
 		display: flex;
 		flex-direction: column;
-		min-width: 0;
+		align-items: center;
+		text-align: center;
 	}
 
-	.home-project-card:hover {
-		transform: translateY(-5px);
-		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+	:global(.pillar-label) {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: #007cba;
+		margin-bottom: 1rem;
+		text-align: center;
 	}
 
-	.home-project-card__link {
-		display: grid;
-		grid-template-rows: auto 1fr;
-		color: inherit;
-		text-decoration: none;
-		height: 100%;
-		min-width: 0;
-	}
-
-	.home-project-card__image {
-		width: 100%;
-		height: 120px;
-		object-fit: cover;
-		display: block;
-		border-bottom: 1px solid var(--border);
-		background: var(--surface);
-	}
-
-	.home-project-card__body {
-		padding: 1rem;
-		min-width: 0;
-		overflow-wrap: anywhere;
-		word-break: break-word;
-	}
-
-	.home-project-card__body h3 {
-		margin: 0 0 0.5rem;
-		font-size: 1rem;
-		line-height: 1.4;
-	}
-
-	.home-project-card__body p {
-		margin: 0;
-		font-size: 0.85rem;
-		color: var(--text-subtle);
-	}
-
-	.home-latest {
-		margin-bottom: 4rem;
-	}
-
-	.home-news__grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-		gap: 1.5rem;
-		justify-content: center;
-	}
-
-	.news-card {
-		color: inherit;
-	}
-
-	.news-card__visual {
+	:global(.pillar-item img) {
 		width: 100%;
 		aspect-ratio: 4 / 3;
-		margin-bottom: 0.8rem;
-		border: 1px solid var(--border);
-		background:
-			linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 45%),
-			linear-gradient(160deg, #cfd9dc 0%, #a5b8be 100%);
+		object-fit: contain;
+		border: none;
+	}
+
+	:global(.video-wrapper) {
+		position: relative;
+		padding-bottom: 56.25%;
+		height: 0;
 		overflow: hidden;
-		display: flex;
+		margin: 1rem 0;
 	}
 
-	.news-card__visual.visual-theme-1 {
-		background:
-			linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 45%),
-			linear-gradient(160deg, #d7e4e8 0%, #a8c1c8 100%);
-	}
-
-	.news-card__visual.visual-theme-2 {
-		background:
-			linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent 45%),
-			linear-gradient(160deg, #dfe6d7 0%, #b7c6a5 100%);
-	}
-
-	.news-card__visual.visual-theme-3 {
-		background:
-			linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 45%),
-			linear-gradient(160deg, #e5dfe8 0%, #c3b0cf 100%);
-	}
-
-	.news-card__visual.visual-theme-4 {
-		background:
-			linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 45%),
-			linear-gradient(160deg, #e8e1d8 0%, #d0b598 100%);
-	}
-
-	.news-card__visual.visual-theme-5 {
-		background:
-			linear-gradient(135deg, rgba(255, 255, 255, 0.22), transparent 45%),
-			linear-gradient(160deg, #d8e4e8 0%, #a3bcc4 100%);
-	}
-
-	.news-card__link {
-		display: block;
-		color: inherit;
-		text-decoration: none;
-	}
-
-	.news-card__link:hover h3 {
-		color: var(--accent);
-	}
-
-	.news-card__link:hover .news-card__image {
-		transform: scale(1.05);
-	}
-
-	.news-card__image {
+	:global(.video-wrapper iframe) {
+		position: absolute;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
-		object-fit: cover;
-		transition: transform 0.3s ease;
 	}
 
-	.news-card h3 {
-		margin: 0.5rem 0 0.45rem;
-		font-size: 1rem;
-		font-weight: 600;
-		line-height: 1.5;
+	:global(.footer-mark) {
+		margin-top: 4rem;
+		text-align: center;
 	}
 
-	.news-card p {
-		margin: 0.35rem 0 0;
-		color: var(--text-subtle);
+	:global(.footer-mark img) {
+		max-width: 500px;
+		width: 100%;
+		height: auto;
+		border: none;
 	}
 
-	.news-card__date {
-		font-size: 0.9rem;
-		color: var(--text-subtle);
-	}
-
-	@media (max-width: 1024px) {
-		.home-page-container {
-			padding-left: 1rem;
-			padding-right: 1rem;
-		}
-
-		.home-topic-carousel__item {
-			flex-basis: 250px;
-			width: 250px;
-			min-width: 250px;
-		}
-
-		.home-intro,
-		.home-intro__branding{
+	@media (max-width: 900px) {
+		:global(.pillar-grid) {
 			grid-template-columns: 1fr;
 		}
-		
-		.home-news__grid {
-       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	}
+
+	@media (max-width: 640px) {
+		.top-hero {
+			height: 30vh;
+			min-height: 200px;
 		}
 
-		.home-news-card {
-			flex-direction: column;
-			gap: 0.5rem;
+		.top-page__content {
+			padding: 1.5rem;
 		}
 	}
 </style>
-
-<script>
-	function setupCarousel() {
-		const section = document.querySelector(
-			"[data-topic-carousel]",
-		) as HTMLElement | null;
-		if (!section || section.dataset.carouselReady === "true") return;
-
-		const track = section.querySelector(
-			"[data-carousel-track]",
-		) as HTMLElement | null;
-		const viewport = section.querySelector(
-			"[data-carousel-viewport]",
-		) as HTMLElement | null;
-		const prevBtn = document.getElementById("carousel-prev");
-		const nextBtn = document.getElementById("carousel-next");
-
-		if (!track || !viewport || !prevBtn || !nextBtn) return;
-		section.dataset.carouselReady = "true";
-
-		let currentX = 0;
-		let lastTimestamp = 0;
-		let isManual = false;
-		let manualDirection = 0;
-		let isLongPress = false;
-		let pressTimer: number | null = null;
-
-		const AUTO_SPEED = 0.04;
-		const MANUAL_SPEED = 0.8;
-		const ITEM_WIDTH = 220;
-		const HALF_WIDTH = track.scrollWidth / 2;
-
-		const update = (timestamp: number) => {
-			if (!lastTimestamp) lastTimestamp = timestamp;
-			const deltaTime = timestamp - lastTimestamp;
-			lastTimestamp = timestamp;
-
-			if (isManual) {
-				if (isLongPress) {
-					currentX += manualDirection * MANUAL_SPEED * deltaTime;
-				}
-			} else {
-				currentX -= AUTO_SPEED * deltaTime;
-			}
-
-			if (currentX > 0) currentX -= HALF_WIDTH;
-			if (currentX < -HALF_WIDTH) currentX += HALF_WIDTH;
-
-			track.style.transform = `translateX(${currentX}px)`;
-			requestAnimationFrame(update);
-		};
-
-		const moveByItem = (direction: number) => {
-			isManual = true;
-			track.classList.add("is-jumping");
-			currentX += direction * ITEM_WIDTH;
-
-			window.setTimeout(() => {
-				track.classList.remove("is-jumping");
-				isManual = false;
-			}, 400);
-		};
-
-		const onStart = (direction: number) => {
-			isManual = true;
-			isLongPress = false;
-			manualDirection = direction;
-			pressTimer = window.setTimeout(() => {
-				isLongPress = true;
-			}, 250);
-		};
-
-		const onEnd = (direction: number) => {
-			if (pressTimer) {
-				window.clearTimeout(pressTimer);
-			}
-
-			if (!isLongPress) {
-				moveByItem(direction);
-			} else {
-				isLongPress = false;
-				isManual = false;
-			}
-
-			pressTimer = null;
-		};
-
-		prevBtn.addEventListener("mousedown", () => onStart(1));
-		nextBtn.addEventListener("mousedown", () => onStart(-1));
-
-		window.addEventListener("mouseup", (event) => {
-			if (!isManual) return;
-
-			const target = event.target as Node | null;
-			const isPrev = Boolean(
-				target && (target === prevBtn || prevBtn.contains(target)),
-			);
-			const isNext = Boolean(
-				target && (target === nextBtn || nextBtn.contains(target)),
-			);
-
-			if (isPrev) {
-				onEnd(1);
-			} else if (isNext) {
-				onEnd(-1);
-			} else {
-				if (pressTimer) {
-					window.clearTimeout(pressTimer);
-				}
-				isLongPress = false;
-				isManual = false;
-				pressTimer = null;
-			}
-		});
-
-		prevBtn.addEventListener("touchstart", (event) => {
-			event.preventDefault();
-			onStart(1);
-		});
-		prevBtn.addEventListener("touchend", (event) => {
-			event.preventDefault();
-			onEnd(1);
-		});
-		nextBtn.addEventListener("touchstart", (event) => {
-			event.preventDefault();
-			onStart(-1);
-		});
-		nextBtn.addEventListener("touchend", (event) => {
-			event.preventDefault();
-			onEnd(-1);
-		});
-
-		requestAnimationFrame(update);
-	}
-
-	setupCarousel();
-	document.addEventListener("astro:page-load", setupCarousel);
-</script>

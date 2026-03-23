@@ -1,9 +1,7 @@
 ---
-import { Image } from "astro:assets";
 import { getPrimaryNav } from "../data/navigation";
 import { siteMeta } from "../data/site";
 import { withBasePath } from "../lib/urls";
-import logoImg from "../assets/shinolab_logo.svg";
 
 interface Props {
     currentPath?: string;
@@ -16,10 +14,7 @@ const { currentPath = "/", locale = "ja", languageSwitchHref } = Astro.props;
 const navItems = getPrimaryNav(locale);
 const homePath = navItems[0]?.href ?? "/";
 const homeHref = withBasePath(homePath) ?? homePath;
-const topbarMeta =
-    locale === "en"
-        ? "The University of Tokyo"
-        : "東京大学 新領域・情報理工・工学部";
+const topbarMeta = locale === "en" ? siteMeta.topbarEn : siteMeta.topbarJa;
 
 const normalizePath = (path: string) => {
     if (path !== "/" && path.endsWith("/")) {
@@ -66,28 +61,14 @@ const isActive = (href: string) => {
 
 <div class="site-topbar">
     <div class="container site-topbar__inner">
-        <div class="site-topbar__meta-container">
-            <span class="site-topbar__text-bundle">
-                {topbarMeta}
-            </span>
-        </div>
+        <span class="site-topbar__text-bundle">{topbarMeta}</span>
     </div>
 </div>
 
 <header class="site-header">
     <div class="container site-header__inner">
         <a class="site-brand" href={homeHref}>
-            <Image
-                src={logoImg}
-                alt="Shinoda & Makino Lab Logo"
-                class="custom-mobile-logo-img"
-                width={48}
-                height={48}
-                loading="eager"
-            />
-            <span class="site-brand__name">
-                {locale === "en" ? siteMeta.englishName : siteMeta.japaneseName}
-            </span>
+            <span class="site-brand__name">{siteMeta.englishName}</span>
         </a>
         <button
             type="button"
@@ -167,25 +148,17 @@ const isActive = (href: string) => {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        gap: 15px;
         color: inherit;
         text-decoration: none;
-    }
-
-    .custom-mobile-logo-img {
-        height: 3.3rem;
-        width: auto;
-        display: inline-block;
-        vertical-align: middle;
-        margin-top: -5px;
+        min-width: 0;
     }
 
     .site-brand__name {
-        font-size: 1.8rem;
-        font-weight: 700;
-        line-height: 1.2;
-        letter-spacing: 0;
+        font-size: 1.55rem;
+        font-weight: 800;
+        line-height: 1.15;
         white-space: nowrap;
+        overflow-wrap: anywhere;
     }
 
     .site-nav {
@@ -307,7 +280,7 @@ const isActive = (href: string) => {
         }
 
         .site-brand__name {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
         }
 
         .custom-mobile-menu-btn {
@@ -349,20 +322,8 @@ const isActive = (href: string) => {
     }
 
     @media (max-width: 570px) {
-        :global(html:not([lang="ja"])) .site-brand__name {
+        .site-brand__name {
             white-space: normal;
-            word-break: break-word;
-            max-width: 95%;
-            line-height: 1.2;
-            font-size: 1.4rem;
-        }
-
-        :global(html[lang="ja"]) .site-brand__name {
-            font-size: 1.4rem;
-        }
-
-        .custom-mobile-logo-img {
-            height: 2.64rem;
         }
     }
 </style>

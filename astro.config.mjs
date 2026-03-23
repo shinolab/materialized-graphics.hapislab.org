@@ -8,7 +8,8 @@ import rehypeKatex from 'rehype-katex';
 export default defineConfig({
 	integrations: [mdx()],
 	site: 'https://shinolab.github.io',
-	base: '/hapislab-org-homepage',
+	base: '/',
+	trailingSlash: 'always',
 	markdown: {
 		remarkPlugins: [remarkMath],
 		rehypePlugins: [rehypeKatex],

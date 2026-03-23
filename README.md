@@ -21,7 +21,7 @@
    ```sh
    npm run dev
    ```
-4. ブラウザで `http://localhost:4321/hapislab-org-homepage` を開きます.
+4. ブラウザで `http://localhost:4321` を開きます.
 
 ---
 

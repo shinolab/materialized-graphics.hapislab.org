@@ -10,6 +10,6 @@ title: 演習第二
 
 [資料３](https://drive.google.com/file/d/1qjB8pmlXUYuaRgU3fn2H_ZBit5VNjeq5/view?usp=drive_link) (21/01/05)
 
-[ホームへ](..)
+[ホームへ](../)
 
 (2021/01/04 更新）

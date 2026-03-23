@@ -4,7 +4,7 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import { getHomePageContent } from "../data/home";
 import { resolveAssetObject } from "../lib/public-assets";
-import { withBase, withBasePath } from "../lib/urls";
+import { withBasePath } from "../lib/urls";
 import {
 	getHomeResearchTopics,
 	getResearchTopics,
@@ -277,7 +277,7 @@ const descriptionParagraphs = copy.description
 								<article class="surface home-project-card">
 									<a
 										class="home-project-card__link"
-										href={withBase(project.href)}
+										href={withBasePath(project.href)}
 									>
 										{imageSrc ? (
 											<Image

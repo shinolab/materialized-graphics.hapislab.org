@@ -70,9 +70,9 @@ export function withBasePath(path?: string): string | undefined {
 	}
 
 	const [pathname, suffix] = splitSuffix(resolved);
-	if (pathname === '/' || pathname.endsWith('/') || looksLikeFilePath(pathname)) {
+	if (pathname === '/' || looksLikeFilePath(pathname)) {
 		return resolved;
 	}
 
-	return `${pathname}/${suffix}`;
+	return `${pathname.endsWith('/') ? pathname : `${pathname}/`}${suffix}`;
 }

@@ -21,7 +21,7 @@ title: ハプティクス
 
 [レポート課題](https://drive.google.com/file/d/1mLm0QSgjdNxmsUB3Gaf1-TPKz-cWdslj/view?usp=sharing)
 
-[ホームへ](..)
+[ホームへ](../)
 
 (2021/10/2 更新）
 

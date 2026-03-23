@@ -1,0 +1,75 @@
+---
+title: Details of CEATEC 2012 demo
+description: Power supply and high-speed communication anywhere on the desk.
+---
+
+import { Image } from "astro:assets";
+import ceatecImg from "../../../../assets/special-pages/hiroyuki_shinoda/2dcom/Ceatec2012a.JPG";
+
+<div style="max-width: 600px; margin: 0 auto; font-family: 'Times New Roman', serif; line-height: 1.5; color: #333;">
+  <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+    <div style="flex: 1;">
+      <p style="font-weight: bold; text-align: justify; margin-bottom: 1rem;">
+        Power supply and high-speed communication anywhere on the desk.
+      </p>
+      <p style="text-align: justify; margin-bottom: 1rem;">
+        A single sheet (5mm thick in the demo) transmits power and signals wirelessly. Items on the sheet work with the electricity from the sheet.
+      </p>
+      <p style="text-align: justify; font-size: 0.9rem; color: #555;">
+        This is a collaborative work of the University of Tokyo, NEC Corporation (NEC), NEC Engineering, Ltd., CellCross Co., Ltd. and Teijin Limited, supported by NICT.
+      </p>
+    </div>
+    <div style="width: 210px; flex-shrink: 0; text-align: right;">
+      <Image src={ceatecImg} alt="CEATEC 2012 demo" width={204} height={153} style="border: 0; margin-bottom: 4px;" />
+      <p style="font-family: Arial, sans-serif; font-size: 0.7rem; color: #666; margin: 0;">*Copied from ITmedia PCUSER_</p>
+    </div>
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 1.5rem;">
+    <p style="font-family: Arial, sans-serif; color: #0000FF; margin-bottom: 0.25rem;">What is new as wireless powering?</p>
+    Items are powered anywhere on a wide-area desk with practical safety and efficiency. It is not only a contactless charging. This technology enables virtually everything on the desk to work with electricity under the total maximum power limit[1].
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 1.5rem;">
+    <p style="font-family: Arial, sans-serif; color: #0000FF; margin-bottom: 0.25rem;">What are the differences from other methods?</p>
+    The power and signals are transmitted with microwaves confined in the sheet.<br/>
+    <strong>-Easy to widen:</strong> The components of the wide area sheet are only aluminum thin layers and low-loss insulators. The electrical circuits are only at the edge of the sheet.<br/>
+    <strong>-Information:</strong> Wideband microwave signal transmission via the sheet is also possible.
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 1.5rem;">
+    <p style="font-family: Arial, sans-serif; color: #0000FF; margin-bottom: 0.25rem;">How safe?</p>
+    The power absorption by direct touch of a human body on the sheet is less than cell-phone. General objects on the desk are not exposed to strong electromagnetic field without any shielding.
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 1.5rem;">
+    <p style="font-family: Arial, sans-serif; color: #0000FF; margin-bottom: 0.25rem;">Interference with other wireless applications?</p>
+    The demo system uses virtually zero bandwidth of 2.48 GHz. The radiation is less than a highest quality microwave oven and the bandwidth is much less than it.
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 1.5rem;">
+    <p style="font-family: Arial, sans-serif; color: #0000FF; margin-bottom: 0.25rem;">What the methods for the safety and low electromagnetic leakage are?</p>
+    All the leakage paths, leakages from the surface and sheet edges are blocked. Only 0.1% of the input RF power (10mW in total for one in the three sites on the demo table) is leaking outside the sheet, in the case there are no items on the sheet. The key technologies are summarized as follows.
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 1.5rem;">
+    <strong>(1) 4mm insulator layer as the top layer of the sheet</strong><br/>
+    The aluminum mesh layer pattern is designed so that the leakage is the minimum. A 4mm insulator layer on the surface prevents the electromagnetic leakage into general objects touching the surface. A special coupler with a high Q resonance can absorb the power, otherwise, strong magnetic fields are not formed outside the sheet. More detailed information is in the paper of Akihito Noda. <a href="http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5875914" style="color: #FF3399;">(PDF)</a>
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 1.5rem;">
+    <strong>(2) EBG[2] structure around the coupler</strong><br/>
+    The practical major risk from the surface is that from the coupler edge since the special device is absorbing significant electromagnetic power. A structure around the coupler named "EBG structure" prevents the leakage from the coupler. The technology was developed by NEC Corporation.
+  </div>
+
+  <div style="text-align: justify; margin-bottom: 1.5rem;">
+    <strong>(3) Phase control of microwave transmitters</strong><br/>
+    A side-edge of the sheet has 7 microwave transmitters. The system selects the best transmitters and control the phases for maximizing the efficiency. This mechanism localizes the electromagnetic density in the sheet around a target coupler and provides perfect safety against unexpected powering to a general object that forms high Q resonance by chance.
+  </div>
+
+  <div style="font-size: 0.9rem; border-top: 1px solid #ccc; padding-top: 1rem; margin-top: 2rem;">
+    <p>[1] On the table, there are three independent sheet sites. One sheet site provides 10W RF power and one item can use 4W DC power (DC to DC efficiency is 24%) in the best case of the demo system.</p>
+    <p>[2] Electromagnetic Band Gap (EBG)<br/>
+    A periodic structure for suppressing the transmission of electromagnetic waves for specific frequencies using metamaterial application techniques.</p>
+  </div>
+</div>

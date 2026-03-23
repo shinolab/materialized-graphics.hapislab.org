@@ -2,7 +2,7 @@
 import { Image } from "astro:assets";
 import { getPrimaryNav } from "../data/navigation";
 import { siteMeta } from "../data/site";
-import { withBase, withBasePath } from "../lib/urls";
+import { withBasePath } from "../lib/urls";
 import logoImg from "../assets/shinolab_logo.svg";
 
 interface Props {
@@ -15,7 +15,7 @@ const { currentPath = "/", locale = "ja", languageSwitchHref } = Astro.props;
 
 const navItems = getPrimaryNav(locale);
 const homePath = navItems[0]?.href ?? "/";
-const homeHref = withBase(homePath) ?? homePath;
+const homeHref = withBasePath(homePath) ?? homePath;
 const topbarMeta =
     locale === "en"
         ? "The University of Tokyo"
@@ -109,7 +109,7 @@ const isActive = (href: string) => {
                             "site-nav__link",
                             { "site-nav__link--active": isActive(item.href) },
                         ]}
-                        href={withBase(item.href)}
+                        href={withBasePath(item.href)}
                     >
                         {item.label}
                     </a>

@@ -32,6 +32,6 @@ title: 回路学第一
 [第８章](https://drive.google.com/file/d/1mTZUJhX3wWUDReQqVEkHkDts5Hyf_6px/view?usp=drive_link)　（本講義の範囲外としています）<br/>
 [最終回スライド](https://drive.google.com/file/d/1FOzORb-pfqMWcnJvXEy7aVnaSYwiNJCd/view?usp=drive_link)
 
-[ホームへ](..)
+[ホームへ](../)
 
 (2021/6/12 更新）

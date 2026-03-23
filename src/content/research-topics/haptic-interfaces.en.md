@@ -12,7 +12,7 @@ thumbnailAlt: Haptic Interfaces
 New technologies of haptic interfaces.
 
 Midair Haptics research:
-- [Symmetric telexistence by 3D haptic & optical hologram (Hptoclone) 2015](../haptoclone)
+- [Symmetric telexistence by 3D haptic & optical hologram (Hptoclone) 2015](/en/research-topics/haptoclone/)
 - [Ultrasonic 3D Haptic Hologram 2015](https://www.youtube.com/watch?v=s7JeCVB7Qvg)
 - [Aerial touch panel with haptic feedback (HaptoMime)  2014](https://www.youtube.com/watch?v=uARGRlpCWg8)
 - [Tactile projector 2013](http://www.youtube.com/watch?v=Bb0hNMxxewg)

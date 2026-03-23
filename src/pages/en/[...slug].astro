@@ -1,25 +1,20 @@
 ---
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
-import DetailPageRenderer from "../../components/DetailPageRenderer.astro";
 import StaticPageRenderer from "../../components/StaticPageRenderer.astro";
 import {
 	englishStaticPageEntries,
 	type StaticPageEntry,
 } from "../../data/page-registry";
 import { loadLocalizedContent, type FrontmatterLike } from "../../lib/content";
-import {
-	getSpecialPageSlugs,
-	loadSpecialPageContent,
-} from "../../lib/special-page-content";
 
 type MarkdownModule = {
 	default: AstroComponentFactory;
 	frontmatter?: FrontmatterLike;
 };
 
-type RouteProps =
-	| { type: "static"; entry: StaticPageEntry }
-	| { type: "special"; slug: string };
+interface Props {
+	entry: StaticPageEntry;
+}
 
 const pageModules = import.meta.glob("../../content/pages/*.{md,mdx}") as Record<
 	string,
@@ -31,32 +26,26 @@ const pageHtmlModules = import.meta.glob("../../content/pages/*.html", {
 }) as Record<string, () => Promise<string>>;
 
 export function getStaticPaths() {
-	return [
-		...englishStaticPageEntries.map((entry) => ({
-			params: { slug: entry.slug },
-			props: { type: "static", entry },
-		})),
-		...getSpecialPageSlugs("en").map((slug) => ({
-			params: { slug },
-			props: { type: "special", slug },
-		})),
-	];
+	return englishStaticPageEntries.map((entry) => ({
+		params: { slug: entry.slug },
+		props: { entry },
+	}));
 }
 
-const route = Astro.props as RouteProps;
+const { entry } = Astro.props;
 
 let ContentComponent;
 let frontmatter;
 let htmlContent = "";
 let fallbackNotice;
-let title;
-let description;
-let lead;
+let title = entry.title;
+let description = entry.description;
+let lead = entry.lead;
 
-if (route.type === "static" && route.entry.contentId) {
+if (entry.contentId) {
 	const content = await loadLocalizedContent({
 		locale: "en",
-		basePath: `../../content/pages/${route.entry.contentId}`,
+		basePath: `../../content/pages/${entry.contentId}`,
 		markdownModules: pageModules,
 		htmlModules: pageHtmlModules,
 	});
@@ -66,54 +55,18 @@ if (route.type === "static" && route.entry.contentId) {
 	fallbackNotice = content.isFallback
 		? "This page is not yet available in English. 日本語版の内容を表示しています。"
 		: undefined;
-
-	title = route.entry.title;
-	description = route.entry.description;
-	lead = route.entry.lead;
-} else if (route.type === "static") {
-	title = route.entry.title;
-	description = route.entry.description;
-	lead = route.entry.lead;
-} else {
-	const content = await loadSpecialPageContent("en", route.slug);
-	ContentComponent = content.ContentComponent;
-	frontmatter = content.frontmatter;
-	htmlContent = content.htmlContent;
-	fallbackNotice = content.isFallback
-		? "This page is not yet available in English. 日本語版の内容を表示しています。"
-		: undefined;
-	title = content.frontmatter?.title ?? route.slug;
-	description = content.frontmatter?.description;
-	lead = content.frontmatter?.lead;
 }
 ---
 
-{
-	route.type === "static" ? (
-		<StaticPageRenderer
-			currentPath={route.entry.currentPath}
-			locale="en"
-			frontmatter={frontmatter}
-			ContentComponent={ContentComponent}
-			htmlContent={htmlContent}
-			title={title}
-			description={description}
-			lead={lead}
-			introHtml={route.entry.introHtml}
-			fallbackNotice={fallbackNotice}
-			kind={route.entry.kind}
-		/>
-	) : (
-		<DetailPageRenderer
-			title={title}
-			description={description}
-			lead={lead}
-			currentPath={`/en/${route.slug}`}
-			locale="en"
-			ContentComponent={ContentComponent}
-			htmlContent={htmlContent}
-			fallbackNotice={fallbackNotice}
-			languageSwitchHref={`/${route.slug}`}
-		/>
-	)
-}
+<StaticPageRenderer
+	currentPath={entry.currentPath}
+	locale="en"
+	frontmatter={frontmatter}
+	ContentComponent={ContentComponent}
+	htmlContent={htmlContent}
+	title={title}
+	description={description}
+	lead={lead}
+	fallbackNotice={fallbackNotice}
+	languageSwitchHref={entry.languageSwitchHref}
+/>

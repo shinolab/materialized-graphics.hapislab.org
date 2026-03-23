@@ -1,5 +1,18 @@
 ---
 import TopPage from "../../components/TopPage.astro";
+import { loadLocalizedContent } from "../../lib/content";
+
+const pageModules = import.meta.glob("../../content/pages/*.{md,mdx}") as any;
+
+const content = await loadLocalizedContent({
+	locale: "en",
+	basePath: `../../content/pages/index`,
+	markdownModules: pageModules,
+});
 ---
 
-<TopPage locale="en" />
+<TopPage
+	locale="en"
+	ContentComponent={content.ContentComponent}
+	frontmatter={content.frontmatter}
+/>

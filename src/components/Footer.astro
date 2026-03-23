@@ -1,7 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import utokyoLogo from "../assets/University_of_Tokyo_logo_(2024).svg";
-
+import crestLogo from "../assets/Logos_crest_jst.png";
 import { getPrimaryNav } from "../data/navigation";
 import { siteMeta } from "../data/site";
 import { withBasePath } from "../lib/urls";
@@ -18,35 +17,14 @@ const footerNav = getPrimaryNav(locale).filter(
 
 <footer class="site-footer">
     <div class="container site-footer__inner">
-        <div class="site-footer__logo">
-            <a
-                href="https://www.u-tokyo.ac.jp/"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                <Image
-                    src={utokyoLogo}
-                    alt="東京大学 / The University of Tokyo"
-                />
-            </a>
+        <div class="site-footer__crest-logo">
+            <Image src={crestLogo} alt="JST CREST" />
         </div>
-        <nav
-            class="site-footer__nav"
-            aria-label={locale === "en"
-                ? "Footer navigation"
-                : "フッターナビゲーション"}
-        >
-            {
-                footerNav.map((item) => (
-                    <a href={withBasePath(item.href)}>{item.label}</a>
-                ))
-            }
-        </nav>
         <p class="site-footer__meta">
             © {
                 locale === "en"
                     ? siteMeta.englishName
-                    : `${siteMeta.japaneseName}/${siteMeta.englishName}`
+                    : `${siteMeta.englishName}`
             }
         </p>
     </div>
@@ -62,15 +40,16 @@ const footerNav = getPrimaryNav(locale).filter(
         text-align: center;
     }
 
-    .site-footer__logo {
-        margin-bottom: 3.5rem;
+    .site-footer__crest-logo {
+        margin-bottom: 2rem;
         display: flex;
         justify-content: center;
     }
 
-    .site-footer__logo :global(img) {
-        height: 3rem;
-        width: auto;
+    .site-footer__crest-logo :global(img) {
+        max-width: 400px;
+        width: 100%;
+        height: auto;
         display: block;
     }
 
@@ -96,11 +75,5 @@ const footerNav = getPrimaryNav(locale).filter(
     .site-footer__meta {
         margin: 0.2rem 0;
         color: var(--text-subtle);
-    }
-
-    @media (max-width: 1024px) {
-        .site-footer__logo :global(img) {
-            height: 2.2rem;
-        }
     }
 </style>

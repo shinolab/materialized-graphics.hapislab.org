@@ -1,0 +1,55 @@
+---
+title: これまでの成果
+description: 実体化映像プロジェクトの概要と成果
+---
+
+import { Image } from "astro:assets";
+import SideBySide from "../../components/SideBySide.astro";
+
+import springer_book from "../../assets/springer_book.png";
+
+[プロジェクト期間 2018-2023]
+
+空中超音波による触覚提示は 2008 年ごろから始まりました。超音波の放射圧は比較的小さなものではありますが、その強弱を 100 Hz 程度で変化させると触覚を感じ取ることができます。ですがそこで生じる感覚は特殊な振動感覚に限定され、幅広い触感の再現は困難でした。例えば物体を把持しているときに感じる定常的な力の感覚、すなわち圧覚は触感を構成する主要触感要素です。しかしその閾値は振動成分よりも高く、現実的な超音波放射圧では感じることができませんでした。
+しかしこのプロジェクトの[森崎らの研究](https://ieeexplore.ieee.org/document/9606531)によって、皮膚上の時空間パターンを適切に制御すればそのような圧覚も再現できることが明らかになりました。この発見よって、超音波によっても物体表面の多様な触感が再現できることがはじめて実証されました。
+
+人間の指の動きをセンシングしながらVR物体を把持した感覚を再現できるか、というのは早い時期から空中ハプティクスの関心の一つでした。しかしこれまでは刺激が弱く、また触感も特殊な振動感に限定されていたため「実体感」を感じることはできませんでした。このプロジェクトでは、[松林らの触覚レンダリングアルゴリズム](https://dl.acm.org/doi/10.1145/3290605.3300317)により、VR物体の実体感を感じ取ることができることをはじめて実証しました。また人間の知覚特性を利用し、指先だけでなく、手のひらの広い面積に接触感を提示する技術を確立し、空中映像と弱い力で握手する感覚も再現することができました。
+
+これらの基礎研究は、多数のフェーズドアレイを結合して取り囲んだ装置で行われています。このようなマルチフェーズドアレイによって遮蔽や接触角度によらず安定に皮膚を刺激できます。これらの開発環境は鈴木（颯）らによって管理され、[オープンソースとして github で公開されています](https://github.com/shinolab/autd3)。
+
+＊上記の成果と論文の情報は[空中ハプティクスのページ](https://hapislab.org/airborne-ultrasound-tactile-display)にまとめられています。
+
+実体化映像のもう一つの主要コンポーネントは言うまでもなく３次元映像の再現技術です。本プロジェクトでは、筑波大学 掛谷英紀 らのグループが裸眼での立体映像技術を担当し、開発を推進しています。輻湊調整矛盾がなく、高解像度かつ自然な立体再現が可能な技術を開発し、実体化映像の実証実験の中ですでに活用されています。複数視点から同時に立体像を観察できる立体ディスプレイの開発にも成功しています。
+
+実体化映像を成立させる第３の要素が、それらの感覚情報を生み出すAI、そのコアとなる機械学習の技術です。この部分については東京大学 杉山 将 らのグループが担当し、開発を進めています。機械学習は実体化映像の動作や感覚刺激を生成するだけでなく、その前提となるセンシングや、人間の反応についての評価など、様々な目的で活用することができます。例えば実体化映像の触覚が人間のメンタルに及ぼす影響などは、心理物理実験での定量化が難しい問題の一つでした。これに対して本プロジェクトでは、確信のあるものと曖昧なものとが混在している回答から感覚の全体像を推定するアルゴリズムを具体的に提案しています。また、デザイナーが抱いたイメージを触覚刺激として具体化するデザインツールも提案しています。
+
+### 書籍
+
+<SideBySide reverse="true">
+  <Image width="150" slot="media" src={springer_book} alt="springer_book" />
+  <div>
+    ＊このプロジェクトの成果の一部は空中ハプティクスの書籍にもまとめられています。<br/>
+    [Ultrasound Mid-Air Haptics for Touchless Interfaces](https://link.springer.com/book/10.1007/978-3-031-04043-6)
+  </div>
+</SideBySide>
+
+### 実体化映像の解説論文
+
+[Hiroyuki Shinoda, “Creation of Realistic Haptic Experiences for Materialized Graphics,” AsiaHaptics 2022, Nov. 12-14, Beijing, 2022.](https://drive.google.com/file/d/19sedwvh-sm_QXy6PfLu9_OxF7Pjj0EG4/view?usp=share_link)
+
+### 受賞
+
+Best Demo Award 3rd place, Eurohaptics 2022<br/>
+Zen Somei, Tao Morisaki, Yutaro Toide, Masahio Fujiwara, Yasutoshi Makino, Hiroyuki Shinoda
+
+Best Paper Award, 2022 IEEE Transactions on Haptics<br/>
+Mitsuru Nakajima, Keisuke Hasegawa, Yasutoshi Makino, and Hiroyuki Shinoda
+
+Best Student Demonstration Award, SIGGRAPH ASIA 2021 Emerging Technologies<br/>
+Tao Morisaki, Masahiro Fujiwara, Yasutoshi Makino, Hiroyuki Shinoda
+
+Best Technical Paper Award, IEEE World Haptics Conference 2021<br/>
+Masahiro Fujiwara, Yu Someya, Yasutoshi Makino, and Hiroyuki Shinoda
+
+Finalist (Top3), Best Paper Award, Eurohaptics 2020<br/>
+Atsushi Matsubayashi, Yasutoshi Makino, Hiroyuki Shinoda

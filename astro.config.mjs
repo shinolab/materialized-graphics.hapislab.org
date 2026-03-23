@@ -7,7 +7,7 @@ import rehypeKatex from 'rehype-katex';
 // https://astro.build/config
 export default defineConfig({
 	integrations: [mdx()],
-	site: 'https://shinolab.github.io',
+	site: 'https://materialized-graphics.hapislab.org',
 	base: '/',
 	trailingSlash: 'always',
 	markdown: {

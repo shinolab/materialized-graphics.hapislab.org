@@ -1,12 +1,6 @@
 ---
 import type { AstroComponentFactory } from "astro/runtime/server/index.js";
 import PageFrame from "./PageFrame.astro";
-import Members from "./Members.astro";
-import Publications from "./Publications.astro";
-import TopicGrid from "./TopicGrid.astro";
-import AwardList from "./AwardList.astro";
-import { getResearchTopics } from "../lib/research-topics";
-import { publications } from "../lib/site-data";
 
 interface FrontmatterLike {
 	title?: string;
@@ -23,9 +17,8 @@ interface Props {
 	title?: string;
 	description?: string;
 	lead?: string;
-	introHtml?: string;
 	fallbackNotice?: string;
-	kind?: "basic" | "members" | "publications" | "topics" | "awards";
+	languageSwitchHref?: string;
 }
 
 const {
@@ -37,26 +30,23 @@ const {
 	title,
 	description,
 	lead,
-	introHtml,
 	fallbackNotice,
-	kind = "basic",
+	languageSwitchHref,
 } = Astro.props;
 
 const pageTitle = title ?? frontmatter?.title ?? "";
 const pageDescription = description ?? frontmatter?.description ?? "";
 const pageLead = lead ?? frontmatter?.lead;
-const topics = getResearchTopics(locale);
-const shouldRenderIntro =
-	kind !== "topics" && (ContentComponent || htmlContent || introHtml);
+const shouldRenderContent = ContentComponent || htmlContent;
 ---
 
 <PageFrame
 	title={pageTitle}
 	description={pageDescription}
-	lead={kind === "topics" ? undefined : pageLead}
+	lead={pageLead}
 	currentPath={currentPath}
 	locale={locale}
-	eyebrow={kind === "topics" ? "" : undefined}
+	languageSwitchHref={languageSwitchHref}
 >
 	<div class="content-stack">
 		{
@@ -67,26 +57,88 @@ const shouldRenderIntro =
 			)
 		}
 		{
-			shouldRenderIntro && (
+			shouldRenderContent && (
 				<article class="surface prose">
 					{ContentComponent && <ContentComponent />}
-					{!ContentComponent && htmlContent && (
-						<Fragment set:html={htmlContent} />
-					)}
-					{introHtml && <Fragment set:html={introHtml} />}
+					{!ContentComponent && htmlContent && <Fragment set:html={htmlContent} />}
 				</article>
 			)
 		}
-
-		<div class="kind-content">
-			{kind === "members" && <Members locale={locale} />}
-			{
-				kind === "publications" && (
-					<Publications publications={publications} locale={locale} />
-				)
-			}
-			{kind === "awards" && <AwardList locale={locale} />}
-			{kind === "topics" && <TopicGrid topics={topics} locale={locale} />}
-		</div>
 	</div>
 </PageFrame>
+
+<style>
+	:global(.member-grid) {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 2rem;
+		margin-top: 2rem;
+	}
+
+	:global(.member-card) {
+		display: flex;
+		flex-direction: column;
+	}
+
+	:global(.member-card h3) {
+		color: #007cba;
+		font-size: 1.1rem;
+		margin-top: 0 !important;
+		margin-bottom: 1rem !important;
+		text-align: center;
+		border-bottom: none !important;
+	}
+
+	:global(.member-card h3 a) {
+		color: inherit !important;
+		text-decoration: none !important;
+	}
+
+	:global(.member-card h3::before) {
+		display: none !important;
+	}
+
+	:global(.member-card img) {
+		width: 100%;
+		max-width: 240px;
+		height: 160px;
+		object-fit: contain;
+		margin: 0 auto 1rem !important;
+		border: none !important;
+		box-shadow: none !important;
+		display: block;
+	}
+
+	:global(.member-card ul) {
+		list-style: none;
+		padding-left: 0 !important;
+		margin: 0;
+		text-align: center;
+	}
+
+	:global(.member-card li) {
+		margin-bottom: 0 !important;
+		line-height: 1.4;
+		text-align: center;
+		font-size: 0.95rem;
+	}
+
+	@media (max-width: 1024px) {
+		:global(.member-grid) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 768px) {
+		:global(.member-grid) {
+			grid-template-columns: 1fr;
+			gap: 2.5rem;
+		}
+
+		:global(.member-card img) {
+			width: 200px;
+			height: auto;
+			max-height: 150px;
+		}
+	}
+</style>

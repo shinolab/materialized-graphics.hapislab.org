@@ -1,0 +1,50 @@
+---
+title: Materialized Graphics Project
+description: JST CREST Materialized Graphics project integrating midair haptics, 3D CG, and machine learning to create graphics with a physical entity.
+---
+
+import { Image } from "astro:assets";
+import SideBySide from "../../components/SideBySide.astro";
+
+import Symbiotic_interaction from "../../assets/Symbiotic_interaction.jpg";
+import image from "../../assets/image.png";
+import image2 from "../../assets/image-2.png";
+import brain_n from "../../assets/brain_n.jpg";
+
+<SideBySide reverse="true">
+  <Image slot="media" src={Symbiotic_interaction} alt="Symbiotic_interaction" />
+  <div>
+    **Materialized Graphics** is the 3D CG that a bare hand can touch and even manipulate. [Midair haptics](https://hapislab.org/en/airborne-ultrasound-tactile-display) enables it by producing pressure and thermal distribution on the skin. This project develops this core technology, apply it to interaction studies to understand the human, and create innovative interaction systems.
+  </div>
+</SideBySide>
+
+<div class="pillar-grid">
+<div class="pillar-item">
+    <div class="pillar-label">Haptics</div>
+    <Image src={image} alt="Haptics" />
+</div>
+<div class="pillar-item">
+    <div class="pillar-label">3D CG</div>
+    <Image src={image2} alt="3D CG" />
+</div>
+<div class="pillar-item">
+    <div class="pillar-label">Machine Learning</div>
+    <Image src={brain_n} alt="Machine Learning" />
+</div>
+</div>
+
+A key piece of materialized graphics is high-quality 3D CG visible by naked eyes. Kakeya group at Univ. of Tsukuba develops a device to create a high-resolution 3D image without vergence-accommodation conflict. The method enables a large and practical 3D display causing less eyestrain. We integrate the device with haptics.
+
+Machine learning is a useful tool to understand interaction and simultaneously,  to generate haptic signals in realtime interaction. The top researchers develops the interaction algorithm of materialized graphics and provides mathematical tools to accelerate the interaction research.
+
+### Materialized Graphics enriches Symbiotic Interaction
+
+<SideBySide reverse="true">
+  <div slot="media">
+    <iframe width="800" height="500" src="https://www.youtube.com/embed/zo57INBkIgQ?si=MLE2l2OOQnCHuqmW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+    </iframe>
+  </div>
+  <div>
+    The core of the project is to achieve literal materialized graphics by integrating haptics, 3D CG, and machine learning. It opens up a new field of VR and computer graphics towards various applications. Our final goal is to understand the human interaction and develop human-support systems using such a powerful tool. Materialized graphics provides a new channel of computer-human interface and human-human communication. Advanced haptic stimulation can guide human motion and control the biological and mental state to improve the human behavior.
+  </div>
+</SideBySide>

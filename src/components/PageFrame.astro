@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { siteMeta } from "../data/site";
 
 interface Props {
     title: string;
@@ -13,7 +14,7 @@ interface Props {
 
 const {
     title,
-    description = "Shinoda & Makino Lab.",
+    description = "JST CREST Materialized Graphics project integrating haptics, 3D CG, and machine learning.",
     currentPath,
     locale = "ja",
     languageSwitchHref,
@@ -27,7 +28,7 @@ const pageKey =
 ---
 
 <Layout
-    title={`${title} | ${locale === "en" ? "Shinoda & Makino Lab" : "篠田・牧野研究室"}`}
+    title={`${title} | ${siteMeta.englishName}`}
     description={description}
     currentPath={currentPath}
     locale={locale}

@@ -1,0 +1,49 @@
+---
+title: 実体化映像による多次元インタラクション
+description: JST CREST 実体化映像プロジェクト。空中ハプティクス、3D CG、機械学習を統合し、人間および環境と物理的にインタラクションできる3次元映像の実現を目指します。
+---
+
+import { Image } from "astro:assets";
+import SideBySide from "../../components/SideBySide.astro";
+
+import Symbiotic_interaction from "../../assets/Symbiotic_interaction.jpg";
+import image from "../../assets/image.png";
+import image2 from "../../assets/image-2.png";
+import brain_n from "../../assets/brain_n.jpg";
+
+<SideBySide reverse="true">
+  <Image slot="media" src={Symbiotic_interaction} alt="Symbiotic_interaction" />
+  <div>
+    ### JST CREST 実体化映像プロジェクト
+    実体化映像とは、人間および環境と物理的にインタラクションできる３次元映像のことです。人間の動きをセンシングして映像を変化させると同時に、皮膚上の力と温度の分布を変化させることで物体の存在を感じさせることができます。このような物理的インタラクションは[空中ハプティクス](https://hapislab.org/airborne-ultrasound-tactile-display)、すなわち超音波によって非接触で生成することができます。JST CREST 「実体化映像による多次元インタラクション」（[共生インタラクション領域](https://www.jst.go.jp/kisoken/crest/research_area/ongoing/bunyah29-4.html)）では、このようなコンピュータ映像を実現するとともにそれを用いたインタラクションシステムを提案していきます。 
+  </div>
+</SideBySide>
+
+<div class="pillar-grid">
+<div class="pillar-item">
+    <div class="pillar-label">Haptics</div>
+    <Image src={image} alt="Haptics" />
+</div>
+<div class="pillar-item">
+    <div class="pillar-label">3D CG</div>
+    <Image src={image2} alt="3D CG" />
+</div>
+<div class="pillar-item">
+    <div class="pillar-label">Machine Learning</div>
+    <Image src={brain_n} alt="Machine Learning" />
+</div>
+</div>
+
+実体化映像のもう一つの主要コンポーネントは言うまでもなく３次元映像の再現技術です。その実現には頭部装着型と環境設置型の両方があります。頭部装着型については2010年代に実用化が大きく進展し、メタバースの世界を切り開くことになりました。本プロジェクトでは、もう一方の映像提示技術、すなわち裸眼でも見ることができる環境設置型デバイスの開発に取り組みます。筑波大学 掛谷英紀 らのグループがその開発を担当します。輻湊調整矛盾がなく、高解像度かつ自然な立体再現を目指します。そして実体化映像を成立させる第３の要素が、それらの感覚情報を生み出すAI、そのコアとなる機械学習の技術です。この部分については東京大学 杉山 将 らのグループが担当し、開発を進めています。
+
+### 実体化映像で可能になる共生インタラクション
+
+<SideBySide reverse="true">
+  <div slot="media">
+    <iframe width="800" height="500" src="https://www.youtube.com/embed/zo57INBkIgQ?si=MLE2l2OOQnCHuqmW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+    </iframe>
+  </div>
+  <div>
+    このプロジェクトでは、まず空中ハプティクスと空中映像の技術を十分な水準にまで引き上げることを目指します。それらが高い水準にあれば、実現できるインタラクションの可能性が広がり、ユーザーに与える効果も高まるからです。そして最終的にはその技術を利用して、人間のインタラクションを理解し、人間支援システムを開発することを目指します。実体化映像は、コンピュータと人間のインターフェース、あるいは人間と人間のコミュニケーションに新しいチャンネルを提供します。適切に設計された触覚刺激は、人間の動作を誘導することもでき、人々の身体的および精神的状態を制御して望ましい状態に導く強力なツールになることが期待されます。
+  </div>
+</SideBySide>

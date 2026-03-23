@@ -34,8 +34,7 @@
 1. 最新の `main` を取得: `git switch main && git pull origin main`
 2. 作業用ブランチ作成: `git switch -c <your-branch-name>`
     - ブランチ名は内容に応じて適宜変更してください.
-3. 編集: 具体的な更新手順については, 以下のガイドを参照してください.
-    - 👉 [**コンテンツ更新ガイド (docs/edit-guide.md)**](./docs/edit-guide.md)
+3. 編集
 4. コミット: `git add . && git commit -m "<your commit message>"`
     - コミットメッセージは変更内容がわかるように書いてください.
     - `git add .` は変更したファイルをすべてステージングします. 不要なファイル/機密ファイルなどが含まれないように注意してください. gitに慣れていない場合はGUIクライアントの使用を推奨します.
@@ -45,7 +44,7 @@
 
 ### GitHub Web UI を使う
 
-1. [リポジトリページ](https://github.com/shinolab/hapislab-org-homepage)でファイルを直接編集.
+1. [リポジトリページ](https://github.com/shinolab/materialized-graphics.hapislab.org.git)でファイルを直接編集.
 2. "Commit changes..." から "Create a new branch..." を選択して PR を作成.
 
 ---

@@ -387,3 +387,57 @@ a:hover {
 a {
 	transition: all 0.3s ease;
 }
+
+
+.pillar-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 200px)) !important;
+  
+  gap: 3vw; 
+  justify-content: center; 
+  
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.pillar-item {
+  width: 100%;
+  max-width: 200px;
+  text-align: center;
+  min-width: 0 !important;
+}
+
+.pillar-label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  line-height: 1.2;
+  
+  font-size: clamp(10px, 1.2vw, 14px);
+  
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.pillar-item img {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+}
+
+/* 縦並びへの切り替え設定 */
+@media (max-width: 450px) {
+  .pillar-grid {
+     grid-template-columns: minmax(0, 250px) !important;
+    gap: 20px;
+  }
+  .pillar-item {
+    max-width: 250px;
+    margin: 0 auto;
+  }
+  .pillar-label {
+     font-size: 14px;
+  }
+}

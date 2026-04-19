@@ -410,15 +410,17 @@ a {
 }
 
 .pillar-label {
-  font-weight: bold;
+ font-weight: bold;
   margin-bottom: 8px;
   line-height: 1.2;
   
-  font-size: clamp(10px, 1.2vw, 14px);
+  /* 固定で 0.6rem (約9px) に設定 */
+ font-size: 1.2rem !important; 
   
   word-break: break-word;
   overflow-wrap: anywhere;
   white-space: normal;
+}
 }
 
 .pillar-item img {
@@ -440,4 +442,11 @@ a {
   .pillar-label {
      font-size: 14px;
   }
+}
+
+.member-card img {
+  width: 150px !important;  
+  height: auto !important;  
+  display: block;           
+  margin: 1rem 0;           
 }

@@ -395,7 +395,7 @@ a {
   gap: 3vw; 
   justify-content: center; 
   width: 100%;
-  margin: 1.5rem auto !important; /* 上下に 3rem (約45px) の大きな余白を追加 */
+  margin: 1.8rem auto !important; /* 上下に 3rem (約45px) の大きな余白を追加 */
 }
 
 .pillar-item {

@@ -12,14 +12,12 @@ import image2 from "../../assets/image-2.png";
 import brain_n from "../../assets/brain_n.jpg";
 
 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start' }}>
-  {/* 左側：テキストエリア */}
   <div style={{ flex: '1', minWidth: '300px', marginTop: '-10px' }}> 
     <h3 style={{ marginTop: 0 }}>JST CREST 実体化映像プロジェクト</h3>
     実体化映像とは、人間および環境と物理的にインタラクションできる３次元映像のことです。人間の動きをセンシングして映像を変化させると同時に、皮膚上の力と温度の分布を変化させることで物体の存在を感じさせることができます。このような物理的インタラクションは[空中ハプティクス](https://hapislab.org/airborne-ultrasound-tactile-display)、すなわち超音波によって非接触で生成することができます。JST CREST 「実体化映像による多次元インタラクション」（[共生インタラクション領域](https://www.jst.go.jp/kisoken/crest/research_area/ongoing/bunyah29-4.html)）では、このようなコンピュータ映像を実現するとともにそれを用いたインタラクションシステムを提案していきます。 
   </div>
 
   {/* 右側：画像エリア（ここを修正） */}
-  {/* marginTop を -40px 程度に設定して上に引き上げます */}
   <div style={{ flex: '0 0 25%', minWidth: '150px', marginTop: '-20px' }}>
     <Image slot="media" src={Symbiotic_interaction} alt="Symbiotic_interaction" style={{ width: '100%', height: 'auto' }} />
   </div>
@@ -41,7 +39,6 @@ import brain_n from "../../assets/brain_n.jpg";
 </div>
 </div>
 
-<br/>
 実体化映像のもう一つの主要コンポーネントは言うまでもなく３次元映像の再現技術です。その実現には頭部装着型と環境設置型の両方があります。頭部装着型については2010年代に実用化が大きく進展し、メタバースの世界を切り開くことになりました。本プロジェクトでは、もう一方の映像提示技術、すなわち裸眼でも見ることができる環境設置型デバイスの開発に取り組みます。筑波大学 掛谷英紀 らのグループがその開発を担当します。輻湊調整矛盾がなく、高解像度かつ自然な立体再現を目指します。そして実体化映像を成立させる第３の要素が、それらの感覚情報を生み出すAI、そのコアとなる機械学習の技術です。この部分については東京大学 杉山 将 らのグループが担当し、開発を進めています。
 
 ### 実体化映像で可能になる共生インタラクション

@@ -12,12 +12,10 @@ import image2 from "../../assets/image-2.png";
 import brain_n from "../../assets/brain_n.jpg";
 
 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start' }}>
-  {/* 画像を先に記述することで左側に配置 */}
   <div style={{ flex: '0 0 25%', minWidth: '150px' }}>
     <Image slot="media" src={Symbiotic_interaction} alt="Symbiotic_interaction" style={{ width: '100%', height: 'auto' }} />
   </div>
 
-  {/* テキストを後に記述することで右側に配置 */}
   <div style={{ flex: '1', minWidth: '300px', marginTop: '-10px' }}> 
     <h3 style={{ marginTop: 0 }}>JST CREST Materialized Graphics Project</h3>
     **Materialized Graphics** refers to 3D graphics that can physically interact with humans and their environment. While sensing human movement to update the visuals, the system simultaneously modulates force and temperature distributions on the skin to create a physical perception of the object's presence.
@@ -41,7 +39,6 @@ Such physical interactions can be generated contact-free using [Midair haptics](
 </div>
 </div>
 
-<br/>
 A key piece of materialized graphics is high-quality 3D CG visible by naked eyes. Kakeya group at Univ. of Tsukuba develops a device to create a high-resolution 3D image without vergence-accommodation conflict. The method enables a large and practical 3D display causing less eyestrain. We integrate the device with haptics.
 
 Machine learning is a useful tool to understand interaction and simultaneously,  to generate haptic signals in realtime interaction. The top researchers develops the interaction algorithm of materialized graphics and provides mathematical tools to accelerate the interaction research.

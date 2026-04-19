@@ -11,12 +11,20 @@ import image from "../../assets/image.png";
 import image2 from "../../assets/image-2.png";
 import brain_n from "../../assets/brain_n.jpg";
 
-<SideBySide reverse="true">
-  <Image slot="media" src={Symbiotic_interaction} alt="Symbiotic_interaction" />
-  <div>
-    **Materialized Graphics** is the 3D CG that a bare hand can touch and even manipulate. [Midair haptics](https://hapislab.org/en/airborne-ultrasound-tactile-display) enables it by producing pressure and thermal distribution on the skin. This project develops this core technology, apply it to interaction studies to understand the human, and create innovative interaction systems.
+<div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'flex-start' }}>
+  {/* 画像を先に記述することで左側に配置 */}
+  <div style={{ flex: '0 0 25%', minWidth: '150px' }}>
+    <Image slot="media" src={Symbiotic_interaction} alt="Symbiotic_interaction" style={{ width: '100%', height: 'auto' }} />
   </div>
-</SideBySide>
+
+  {/* テキストを後に記述することで右側に配置 */}
+  <div style={{ flex: '1', minWidth: '300px', marginTop: '-10px' }}> 
+    <h3 style={{ marginTop: 0 }}>JST CREST Materialized Graphics Project</h3>
+    **Materialized Graphics** refers to 3D graphics that can physically interact with humans and their environment. While sensing human movement to update the visuals, the system simultaneously modulates force and temperature distributions on the skin to create a physical perception of the object's presence.
+  </div>
+</div>
+Such physical interactions can be generated contact-free using [Midair haptics](https://hapislab.org/en/airborne-ultrasound-tactile-display), specifically through ultrasound technology. In the JST CREST project "Materialized Graphics for Multidimensional Interaction" in the Symbiotic Interaction area, we aim to realize this type of computer graphics and propose novel interaction systems based on it. 
+
 
 <div class="pillar-grid">
 <div class="pillar-item">
@@ -39,12 +47,26 @@ Machine learning is a useful tool to understand interaction and simultaneously, 
 
 ### Materialized Graphics enriches Symbiotic Interaction
 
-<SideBySide reverse="true">
-  <div slot="media">
-    <iframe width="800" height="500" src="https://www.youtube.com/embed/zo57INBkIgQ?si=MLE2l2OOQnCHuqmW" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+<div>
+  <div>
+  The core of the project is to achieve literal materialized graphics by integrating haptics, 3D CG, and machine learning. It opens up a new field of VR and computer graphics towards various applications. Our final goal is to understand the human interaction and develop human-support systems using such a powerful tool. Materialized graphics provides a new channel of computer-human interface and human-human communication. Advanced haptic stimulation can guide human motion and control the biological and mental state to improve the human behavior. 
+  </div>
+
+   <div style={{ 
+    marginTop: '2rem', 
+    display: 'flex', 
+    justifyContent: 'center', 
+    width: '100%' 
+  }}>
+    <iframe 
+      width="100%" 
+      style={{ aspectRatio: '16 / 9', maxWidth: '700px' }} 
+      src="https://www.youtube.com/embed/zo57INBkIgQ?si=MLE2l2OOQnCHuqmW" 
+      title="YouTube video player" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+      referrerpolicy="strict-origin-when-cross-origin" 
+      allowfullscreen>
     </iframe>
   </div>
-  <div>
-    The core of the project is to achieve literal materialized graphics by integrating haptics, 3D CG, and machine learning. It opens up a new field of VR and computer graphics towards various applications. Our final goal is to understand the human interaction and develop human-support systems using such a powerful tool. Materialized graphics provides a new channel of computer-human interface and human-human communication. Advanced haptic stimulation can guide human motion and control the biological and mental state to improve the human behavior.
-  </div>
-</SideBySide>
+</div>

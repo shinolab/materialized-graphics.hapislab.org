@@ -54,7 +54,7 @@ a:hover {
 }
 
 .container {
-	width: min(1080px, calc(100% - 2rem));
+	width: min(1080px, calc(100% - 0rem));
 	margin: 0 auto;
 }
 
@@ -426,7 +426,7 @@ a {
 }
 
 /* 縦並びへの切り替え設定 */
-@media (max-width: 450px) {
+@media (max-width: 480px) {
   .pillar-grid {
      grid-template-columns: minmax(0, 250px) !important;
     gap: 20px;
@@ -445,4 +445,20 @@ a {
   height: auto !important;  
   display: block;           
   margin: 1rem 0;           
+}
+
+@media (max-width: 480px) {
+  .container, 
+  .page-hero__inner,
+  .kind-content {
+    /* 左右の余白を 1.5rem から 1rem (または 15px) 程度に絞る */
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    width: 100% !important;
+  }
+
+  /* 念のため、すべての要素が画面幅を超えないように強制 */
+  .prose {
+    overflow-x: hidden;
+  }
 }

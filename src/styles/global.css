@@ -392,14 +392,10 @@ a {
 .pillar-grid {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 200px)) !important;
-  
   gap: 3vw; 
   justify-content: center; 
-  
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  margin: 0 auto;
+  margin: 1.5rem auto !important; /* 上下に 3rem (約45px) の大きな余白を追加 */
 }
 
 .pillar-item {

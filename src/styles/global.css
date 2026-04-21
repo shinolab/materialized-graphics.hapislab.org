@@ -54,7 +54,7 @@ a:hover {
 }
 
 .container {
-	width: min(1080px, calc(100% - 0rem));
+	width: min(1080px, calc(100% - 2rem));
 	margin: 0 auto;
 }
 
@@ -73,9 +73,10 @@ a:hover {
 }
 
 .page-hero__inner {
-	padding-left: 1.5rem;
-	padding-right: 1.5rem;
+	padding-left: 0rem;
+	padding-right: 0rem;
 	max-width: 980px;
+	margin: 0 auto;
 	padding-bottom: 0rem;
 }
 
@@ -155,8 +156,8 @@ a:hover {
 }
 
 .kind-content {
-	padding-left: 1.5rem;
-	padding-right: 1.5rem;
+	padding-left: 0rem;
+	padding-right: 0rem;
 }
 
 .content-section {
@@ -164,6 +165,8 @@ a:hover {
 }
 
 .page-main {
+	padding-left: 0 !important;
+    padding-right: 0 !important;
 	max-width: 980px;
 	padding-bottom: 4rem;
 }
@@ -174,7 +177,7 @@ a:hover {
 }
 
 .surface {
-	padding: 1.5rem;
+	padding: 0rem;
 }
 
 .surface--table {
@@ -417,7 +420,6 @@ a {
   overflow-wrap: anywhere;
   white-space: normal;
 }
-}
 
 .pillar-item img {
   width: 100% !important;
@@ -449,16 +451,23 @@ a {
 
 @media (max-width: 480px) {
   .container, 
-  .page-hero__inner,
+  .page-hero__inner {
+	padding-left: 0rem;
+	padding-right: 0rem;
+	max-width: 980px;
+	padding-bottom: 0rem;
+  }
   .kind-content {
     /* 左右の余白を 1.5rem から 1rem (または 15px) 程度に絞る */
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    padding-left: 0rem !important;
+    padding-right: 0rem !important;
     width: 100% !important;
   }
 
   /* 念のため、すべての要素が画面幅を超えないように強制 */
   .prose {
+	padding-left: 0rem !important; 
+    padding-right: 0rem !important;
     overflow-x: hidden;
   }
 }
